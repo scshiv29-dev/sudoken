@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// Improved model definitions
+model puzzles {
+  id          String   @id @map("_id")
+  bestTime    Int?      // Optional integer for best time in seconds
+  difficulty  String
+  puzzle      Json
+  solution    Json
+
+  // Relationships (optional)
+  userGames  UserGame[] // Array of UserGame instances related to this puzzle
+}
+
+model UserGame {
+  id          String   @id @map("_id") @default(cuid())
+  puzzleId    String   
+  solved      Boolean  @default(false)
+  userBestTime Int?      // Optional integer for user's best time in seconds
+  userId      String
+  // Relationships (optional)
+  puzzle     puzzles  @relation(fields: [puzzleId], references: [id]) // Connect to puzzles model
+}
