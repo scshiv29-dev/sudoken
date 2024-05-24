@@ -1,59 +1,28 @@
 "use client";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Modal({ color, diff }: any) {
-  console.log(diff)
-  const router = useRouter();
-  const dif = diff.toLowerCase();
-
-  useEffect(() => {
-    // Polyfill for HTMLDialogElement if not supported by the browser
-    if (typeof HTMLDialogElement === "undefined") {
-      import("dialog-polyfill").then((dialogPolyfill) => {
-        dialogPolyfill.registerDialog(document.getElementById("my_modal_1"));
-      });
-    }
-  }, []);
-
-  const openModal = () => {
-    const modal = document.getElementById("my_modal_1") as HTMLDialogElement;
-    if (modal) {
-      modal.showModal();
-    }
-  };
-
-  const closeModal = () => {
-    const modal = document.getElementById("my_modal_1") as HTMLDialogElement;
-    if (modal) {
-      modal.close();
-    }
-  };
-
-  const handlePlayNow = (e: any) => {
-    e.preventDefault();
-    closeModal();
-    router.push(`/play/${dif}`);
-  };
-
-  return (
-    <div>
-      <button className={`btn ${color}`} onClick={openModal}>
-        Play Now
-      </button>
-      <dialog id="my_modal_1" className="modal">
-        <div className="modal-box">
-          <h3 className="font-bold text-lg">Hello!</h3>
+  function getRandomDifficulty(): string {
+    const difficulties = ["easy", "medium", "hard"];
+    const randomIndex = Math.floor(Math.random() * difficulties.length);
+    return difficulties[randomIndex];
+}
+  const difficulty=diff!=='Random' ? diff.toLowerCase() : getRandomDifficulty()
+    return (
+    <div className="fixed inset-0 bg-opacity-25 backdrop-blur-sm flex justify-center items-center z-50">
+      <div className="border rounded-md  p-6 animate-in zoom-in-50   duration-300  bg-background">
+         <h3 className="font-bold text-lg">Hello!</h3>
           <p className="py-4">
             Click `Play Now` below once you are ready. Time starts the moment you land on the game page .
           </p>
           <div className="modal-action">
-            <button className={`btn ${color}`} onClick={handlePlayNow}>
+            <Link className={`btn ${color}`} href={`/play/${difficulty}`}>
               Play Now
-            </button>
-          </div>
-        </div>
-      </dialog>
+            </Link>
+            </div>
+      </div>
     </div>
   );
 }

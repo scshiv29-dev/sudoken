@@ -79,7 +79,7 @@ export async function getPuzzlesByDifficulty(difficulty: string, count: number):
 }
 
 export async function getRandomPuzzleByDifficulty(difficulty: string): Promise<puzzles | null> {
-  console.log(difficulty)
+
   const puzzlesCount = await prisma.puzzles.count({
     where: { difficulty }
   });

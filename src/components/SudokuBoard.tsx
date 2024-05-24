@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-
+import { cn } from "@/lib/utils";
 export default function SudokuBoard({ sudokudata,sudokuSolution,stopTimer }: any) {
   // Initialize the state with the initial Sudoku data
   const [board, setBoard] = useState(sudokudata);
@@ -23,21 +23,16 @@ export default function SudokuBoard({ sudokudata,sudokuSolution,stopTimer }: any
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen">
+    <div className="flex justify-center items-center">
       <div className="grid grid-cols-9 gap-1 p-4 shadow-lg rounded-lg">
         {board.map((row: any[], rowIndex: number) =>
+        
           row.map((cell, cellIndex) => {
-            let borderClasses = "border border-gray-300";
-            if (cellIndex % 3 === 2 && cellIndex !== 8)
-              borderClasses += " border-r-2 border-black";
-            if (rowIndex % 3 === 2 && rowIndex !== 8)
-              borderClasses += " border-b-2 border-black";
-            if (cellIndex === 8) borderClasses += " border-r";
-            if (rowIndex === 8) borderClasses += " border-b";
-
-            return (
+            const thirdcell=(cellIndex+1)%3===0
+            console.log(typeof(cellIndex))
+            return (  
               <input
-                key={`${rowIndex}-${cellIndex}`}
+                key={`${rowIndex+1}-${cellIndex+1}`}
                 type="text"
                 value={cell === "0" ? "" : cell}
                 readOnly={sudokudata[rowIndex][cellIndex] !== "0"}
@@ -45,7 +40,7 @@ export default function SudokuBoard({ sudokudata,sudokuSolution,stopTimer }: any
                   handleChange(rowIndex, cellIndex, e.target.value)
                 }
                 maxLength={1}
-                className={`w-12 h-12 text-center ${borderClasses} focus:outline-none focus:border-blue-500`}
+                className={cn(`w-12 h-12 text-center border focus:outline-none focus:border-blue-500`,{"mr-2":thirdcell})}
               />
             );
           })
