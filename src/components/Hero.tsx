@@ -7,7 +7,7 @@ export default async function Hero() {
     if (session?.user) {
       return (
         <button className="btn btn-primary">
-          <Link href={"/play"}>'Play --{">"}</Link>
+          <Link href={"/play"}>Play{"==>"}</Link>
         </button>
       );
     } else {
