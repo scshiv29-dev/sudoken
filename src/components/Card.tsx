@@ -1,7 +1,5 @@
 'use client';
 
-import Modal from "./Modal";
-
 export default function Card({ text ,color,changeDifficulty}: any) {
   return (
     <div className="card w-96 bg-base-100 shadow-xl">

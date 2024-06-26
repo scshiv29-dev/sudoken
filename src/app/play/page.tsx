@@ -3,7 +3,7 @@
 import {useState} from "react"
 
 import Card from "@/components/Card";
-import Modal from "@/components/Modal";
+import Playnow from "@/components/Playnow";
 
 export default function Play() {
 
@@ -24,7 +24,7 @@ export default function Play() {
         <Card text={"Random"} color={"btn-primary"}  changeDifficulty={changeDifficulty}/>
    
     </div>
-    {selectedDifficulty? <Modal diff={selectedDifficulty.diff} color={selectedDifficulty.color}/> : null}
+    {selectedDifficulty? <Playnow diff={selectedDifficulty.diff} color={selectedDifficulty.color}/> : null}
     </>
   );
 }
