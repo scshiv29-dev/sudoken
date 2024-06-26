@@ -18,6 +18,7 @@ export default function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
+      <title>Sudoken</title>
       <body className={inter.className}>
       <Navbar/>
       {children}
