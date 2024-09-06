@@ -1,7 +1,7 @@
 {
     "crons": [
       {
-        "path": "/api/send-slack-notification",
+        "path": "/api/keepsupabaseactive",
         "schedule": "0 8 * * *"
       }
     ]
