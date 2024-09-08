@@ -1,10 +1,11 @@
+"use server"
+
 import { signIn } from "@/auth"
  
-export function SignIn() {
+export async function SignIn() {
   return (
     <form
       action={async () => {
-        "use server"
         await signIn("github")
       }}
     >

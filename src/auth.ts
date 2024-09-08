@@ -5,8 +5,8 @@ import { getUserGames } from "./lib/supabase"
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [Github],
   adapter: SupabaseAdapter({
-    url: process.env.SUPABASE_URL as string,
-    secret: process.env.SUPABASE_SERVICE_ROLE_KEY as string,
+    url: process.env.NEXT_PUBLIC_SUPABASE_URL as string,
+    secret: process.env.NEXT_PUBLIC_ANON_KEY as string,
   }),
  
 })

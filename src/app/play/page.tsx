@@ -3,7 +3,7 @@
 import {useState} from "react"
 
 import Card from "@/components/Card";
-import Playnow from "@/components/Playnow";
+import Homepage  from "@/components/homepage";
 
 export default function Play() {
 
@@ -16,7 +16,7 @@ export default function Play() {
   return (
     <>
     <div className="flex flex-wrap  p-4">
-      
+      <Homepage/>
         <Card text={"Easy"} color={"btn-success"}  changeDifficulty={changeDifficulty}/>
         <Card text={"Medium"} color={"btn-warning"}  changeDifficulty={changeDifficulty}/>
         <Card text={"Hard"} color={"btn-error"}  changeDifficulty={changeDifficulty}/>
