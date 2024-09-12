@@ -1,30 +1,52 @@
-'use client';
+"use client";
 
-import {useState} from "react"
+import { useState } from "react";
 
 import Card from "@/components/Card";
-import Homepage  from "@/components/homepage";
+import Homepage from "@/components/homepage";
+import Playnow from "@/components/Playnow";
 
 export default function Play() {
+  const [selectedDifficulty, setSelectedDifficulty] = useState<null | {
+    diff: string;
+    color: string;
+  }>(null);
 
-  const [selectedDifficulty,setSelectedDifficulty]=useState<null|{diff:string,color:string}>(null)
-
-  function changeDifficulty(diff:string,color:string){
-    setSelectedDifficulty({diff,color})
+  function changeDifficulty(diff: string, color: string) {
+    setSelectedDifficulty({ diff, color });
   }
- 
+
   return (
     <>
-    <div className="flex flex-wrap  p-4">
-      <Homepage/>
-        <Card text={"Easy"} color={"btn-success"}  changeDifficulty={changeDifficulty}/>
-        <Card text={"Medium"} color={"btn-warning"}  changeDifficulty={changeDifficulty}/>
-        <Card text={"Hard"} color={"btn-error"}  changeDifficulty={changeDifficulty}/>
+      <div className="flex flex-wrap min-h-[calc(100vh-7rem)]  p-4">
+        <Card
+          text={"Easy"}
+          color={"btn-success"}
+          changeDifficulty={changeDifficulty}
+        />
+        <Card
+          text={"Medium"}
+          color={"btn-warning"}
+          changeDifficulty={changeDifficulty}
+        />
+        <Card
+          text={"Hard"}
+          color={"btn-error"}
+          changeDifficulty={changeDifficulty}
+        />
 
-        <Card text={"Random"} color={"btn-primary"}  changeDifficulty={changeDifficulty}/>
-   
-    </div>
-    {selectedDifficulty? <Playnow diff={selectedDifficulty.diff} color={selectedDifficulty.color}/> : null}
+        <Card
+          text={"Random"}
+          color={"btn-primary"}
+          changeDifficulty={changeDifficulty}
+        />
+      </div>
+      {selectedDifficulty ? (
+        <Playnow
+          diff={selectedDifficulty.diff}
+          color={selectedDifficulty.color}
+        />
+      ) : null}
     </>
   );
 }

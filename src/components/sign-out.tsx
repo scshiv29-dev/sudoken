@@ -1,15 +1,13 @@
-"use server"
+"use client";
+import { LogOut } from "lucide-react";
+import { handleSignOut } from "../../actions";
+import { Button } from "./ui/button";
 
-import { signOut} from "@/auth"
- 
 export async function SignOut() {
   return (
-    <form
-      action={async () => {
-        await signOut()
-      }}
-    >
-      <button type="submit">SignOut</button>
-    </form>
-  )
-} 
+    <Button onClick={() => handleSignOut()} variant="outline">
+      <LogOut className="h-4 w-4 mr-2" />
+      Logout
+    </Button>
+  );
+}

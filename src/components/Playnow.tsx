@@ -1,28 +1,56 @@
 "use client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "./ui/button";
 
-export default function Playnow({ color, diff }: any) {
+export default function Playnow({ color, diff, buttonColor }: any) {
   function getRandomDifficulty(): string {
     const difficulties = ["easy", "medium", "hard"];
     const randomIndex = Math.floor(Math.random() * difficulties.length);
     return difficulties[randomIndex];
-}
-  const difficulty=diff!=='Random' ? diff.toLowerCase() : getRandomDifficulty()
-    return (
-    <div className="fixed inset-0 bg-opacity-25 backdrop-blur-sm flex justify-center items-center z-50">
-      <div className="border rounded-md  p-6 animate-in zoom-in-50   duration-300  bg-background">
-         <h3 className="font-bold text-lg">Hello!</h3>
-          <p className="py-4">
-            Click `Play Now` below once you are ready. Time starts the moment you land on the game page .
-          </p>
-          <div className="modal-action">
-            <Link className={`btn ${color}`} href={`/play/${difficulty}`}>
-              Play Now
-            </Link>
-            </div>
-      </div>
-    </div>
+  }
+
+  const difficulty =
+    diff !== "Random" ? diff.toLowerCase() : getRandomDifficulty();
+  return (
+    <>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button
+            variant="secondary"
+            className={`mt-4 ${buttonColor}`}
+            onClick={undefined}>
+            Start Game
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Hello!</AlertDialogTitle>
+            <AlertDialogDescription>
+              Click `Play Now` below once you are ready. Time starts the moment
+              you land on the game page .
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction asChild>
+              <Link className={`btn ${color}`} href={`/play/${difficulty}`}>
+                Play Now
+              </Link>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
