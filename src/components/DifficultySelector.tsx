@@ -47,7 +47,7 @@ const DifficultySelector = () => {
               {level.title}
             </h3>
             <Playnow
-              color={level.color}
+              color={level.textColor}
               diff={level.title}
               buttonColor={level.buttonColor}
             />

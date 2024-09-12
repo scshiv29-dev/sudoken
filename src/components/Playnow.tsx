@@ -36,7 +36,7 @@ export default function Playnow({ color, diff, buttonColor }: any) {
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Hello!</AlertDialogTitle>
+          <AlertDialogTitle className={color}>{diff}</AlertDialogTitle>
           <AlertDialogDescription>
             Click `Play Now` below once you are ready. Time starts the moment
             you land on the game page .
