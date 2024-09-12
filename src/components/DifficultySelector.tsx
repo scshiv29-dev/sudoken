@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
+import React from "react";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { TrophyIcon, BrainIcon, ZapIcon, ShuffleIcon } from "lucide-react";
+import Playnow from "./Playnow";
 const DifficultySelector = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
@@ -45,6 +46,11 @@ const DifficultySelector = () => {
             <h3 className={`text-xl font-semibold mb-2 ${level.textColor}`}>
               {level.title}
             </h3>
+            <Playnow
+              color={level.color}
+              diff={level.title}
+              buttonColor={level.buttonColor}
+            />
           </CardContent>
         </Card>
       ))}
