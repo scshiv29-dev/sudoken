@@ -24,6 +24,7 @@ import {
   AccordionTrigger,
 } from "./ui/accordion";
 import DifficultySelector from "./DifficultySelector";
+import { faqs, testimonials } from "@/lib/constants";
 
 export default function HomePage() {
   return (
@@ -107,30 +108,14 @@ export default function HomePage() {
             What Our Users Say
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                name: "Alex",
-                comment:
-                  "Sudoken has dramatically improved my Sudoku skills. The adaptive difficulty is a game-changer!",
-              },
-              {
-                name: "Sam",
-                comment:
-                  "I love how I can play on my phone or tablet. It's perfect for my daily commute.",
-              },
-              {
-                name: "Jordan",
-                comment:
-                  "The UI is so clean and intuitive. It makes solving Sudoku puzzles a joy.",
-              },
-            ].map((testimonial, index) => (
+            {testimonials.map((testimonial, index) => (
               <Card
                 key={index}
                 className="bg-white dark:bg-gray-800 border-none shadow-lg">
                 <CardContent className="p-6">
                   <StarIcon className="h-6 w-6 text-yellow-400 mb-4" />
                   <p className="text-gray-600 dark:text-gray-300 mb-4">
-                    "{testimonial.comment}"
+                    &apos;{testimonial.comment}&apos;
                   </p>
                   <p className="font-semibold text-gray-800 dark:text-white">
                     - {testimonial.name}
@@ -147,28 +132,7 @@ export default function HomePage() {
             Frequently Asked Questions
           </h2>
           <Accordion type="single" collapsible className="max-w-2xl mx-auto">
-            {[
-              {
-                question: "Is Sudoken free to play?",
-                answer:
-                  "Yes, Sudoken offers a free version with limited puzzles. We also have a premium version with additional features and unlimited puzzles.",
-              },
-              {
-                question: "Can I play offline?",
-                answer:
-                  "Once you've downloaded the app, you can play puzzles offline. Your progress will sync when you're back online.",
-              },
-              {
-                question: "How often are new puzzles added?",
-                answer:
-                  "We add new puzzles daily to keep the challenge fresh and exciting for our users.",
-              },
-              {
-                question: "Is there a leaderboard?",
-                answer:
-                  "Yes, we have global and friend leaderboards so you can compete with Sudoku enthusiasts worldwide or just with your friends.",
-              },
-            ].map((faq, index) => (
+            {faqs.map((faq, index) => (
               <AccordionItem key={index} value={`item-${index}`}>
                 <AccordionTrigger>{faq.question}</AccordionTrigger>
                 <AccordionContent>{faq.answer}</AccordionContent>

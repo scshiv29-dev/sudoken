@@ -79,3 +79,44 @@ export const difficulties: Difficulty[] = [
     buttonColor: "bg-purple-500 hover:bg-purple-600 text-white",
   },
 ];
+
+export const testimonials = [
+  {
+    name: "Alex",
+    comment:
+      "Sudoken has dramatically improved my Sudoku skills. The adaptive difficulty is a game-changer!",
+  },
+  {
+    name: "Sam",
+    comment:
+      "I love how I can play on my phone or tablet. It's perfect for my daily commute.",
+  },
+  {
+    name: "Jordan",
+    comment:
+      "The UI is so clean and intuitive. It makes solving Sudoku puzzles a joy.",
+  },
+];
+
+export const faqs = [
+  {
+    question: "Is Sudoken free to play?",
+    answer:
+      "Yes, Sudoken offers a free version with limited puzzles. We also have a premium version with additional features and unlimited puzzles.",
+  },
+  {
+    question: "Can I play offline?",
+    answer:
+      "Once you've downloaded the app, you can play puzzles offline. Your progress will sync when you're back online.",
+  },
+  {
+    question: "How often are new puzzles added?",
+    answer:
+      "We add new puzzles daily to keep the challenge fresh and exciting for our users.",
+  },
+  {
+    question: "Is there a leaderboard?",
+    answer:
+      "Yes, we have global and friend leaderboards so you can compete with Sudoku enthusiasts worldwide or just with your friends.",
+  },
+];
