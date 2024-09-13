@@ -9,15 +9,17 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Difficulty } from "@/lib/constants";
+import { getRandomDifficulty } from "@/lib/utils";
 
 import { useRouter } from "next/navigation";
 
-export default function Playnow({ color, diff, buttonColor, clearDiff }: any) {
-  function getRandomDifficulty(): string {
-    const difficulties = ["easy", "medium", "hard"];
-    const randomIndex = Math.floor(Math.random() * difficulties.length);
-    return difficulties[randomIndex];
-  }
+type PlayNowProps = {
+  difficultyColors: Difficulty;
+  clearDiff: ({ redirect }: { redirect: boolean }) => void;
+};
+export default function Playnow({ difficultyColors, clearDiff }: PlayNowProps) {
+  const { title: diff, textColor, buttonColor } = difficultyColors;
 
   const router = useRouter();
   const difficulty =
@@ -27,7 +29,12 @@ export default function Playnow({ color, diff, buttonColor, clearDiff }: any) {
     <AlertDialog open={!!diff} onOpenChange={(v) => null}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle className={color}>{diff}</AlertDialogTitle>
+          <AlertDialogTitle className={textColor}>
+            <span className="flex items-center">
+              <difficultyColors.icon className="h-4 w-4 mr-2" />
+              {diff}
+            </span>
+          </AlertDialogTitle>
           <AlertDialogDescription>
             Click `Play Now` below once you are ready. Time starts the moment
             you land on the game page .

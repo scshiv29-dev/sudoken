@@ -41,8 +41,15 @@ export const modalArray: ModalData[] = [
   },
 ];
 
+export enum DifficultyTitle {
+  Easy = "Easy",
+  Medium = "Medium",
+  Hard = "Hard",
+  Random = "Random",
+}
+
 export type Difficulty = {
-  title: string;
+  title: DifficultyTitle;
   icon: LucideIcon;
   color: string;
   textColor: string;
@@ -51,28 +58,28 @@ export type Difficulty = {
 
 export const difficulties: Difficulty[] = [
   {
-    title: "Easy",
+    title: DifficultyTitle.Easy,
     icon: require("lucide-react").ZapIcon,
     color: "bg-green-100 dark:bg-green-900",
     textColor: "text-green-700 dark:text-green-300",
     buttonColor: "bg-green-500 hover:bg-green-600 text-white",
   },
   {
-    title: "Medium",
+    title: DifficultyTitle.Medium,
     icon: require("lucide-react").BrainIcon,
     color: "bg-yellow-100 dark:bg-yellow-900",
     textColor: "text-yellow-700 dark:text-yellow-300",
     buttonColor: "bg-yellow-500 hover:bg-yellow-600 text-white",
   },
   {
-    title: "Hard",
+    title: DifficultyTitle.Hard,
     icon: require("lucide-react").TrophyIcon,
     color: "bg-red-100 dark:bg-red-900",
     textColor: "text-red-700 dark:text-red-300",
     buttonColor: "bg-red-500 hover:bg-red-600 text-white",
   },
   {
-    title: "Random",
+    title: DifficultyTitle.Random,
     icon: require("lucide-react").ShuffleIcon,
     color: "bg-purple-100 dark:bg-purple-900",
     textColor: "text-purple-700 dark:text-purple-300",
@@ -118,5 +125,28 @@ export const faqs = [
     question: "Is there a leaderboard?",
     answer:
       "Yes, we have global leaderboard so you can compete with Sudoku enthusiasts worldwide ",
+  },
+];
+
+export const whyChoose = [
+  {
+    icon: require("lucide-react").ZapIcon,
+    title: "Adaptive Difficulty",
+    description: "Puzzles that grow with your skills",
+  },
+  {
+    icon: require("lucide-react").SmartphoneIcon,
+    title: "Play Anywhere",
+    description: "Available on all your devices",
+  },
+  {
+    icon: require("lucide-react").BarChartIcon,
+    title: "Track Progress",
+    description: "Monitor your improvement over time",
+  },
+  {
+    icon: require("lucide-react").ClockIcon,
+    title: "Time Challenges",
+    description: "Test your speed and accuracy",
   },
 ];
