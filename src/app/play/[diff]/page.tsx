@@ -1,11 +1,14 @@
-import Clock from "@/components/Clock";
+import Clock,{ClockHandle} from "@/components/Clock";
 import { difficulties } from "@/lib/constants";
 import SudokuBoardWrapper from "@/components/SudokuBoardWrapper";
 import Pill from "@/components/pill";
-import { getRandomPuzzleByDifficulty } from "@/lib/db";
+import { getRandomPuzzleByDifficulty } from "@/app/actions";
 import { capitalize } from "@/lib/utils";
+import { auth } from "@/auth";
+
 
 interface SudokuData {
+  id:string;
   puzzle: string[][];
   solution: string[][];
   difficulty: string;
@@ -24,16 +27,18 @@ function isStringArrayArray(value: any): value is string[][] {
 
 export default async function Play({ params }: { params: { diff: string } }) {
   let sodokudata: SudokuData | null = null;
-
+  const session = await auth();
+  console.log(session)
   try {
     const data = await getRandomPuzzleByDifficulty(params.diff);
-
+    
     if (
       data &&
       isStringArrayArray(data.puzzle) &&
       isStringArrayArray(data.solution)
     ) {
       sodokudata = {
+        id:data.id,
         puzzle: data.puzzle,
         solution: data.solution,
         difficulty: data.difficulty,
@@ -51,7 +56,6 @@ export default async function Play({ params }: { params: { diff: string } }) {
     return (
       <div>
         <div className="flex justify-center items-center gap-x-10 p-10">
-          <Clock color={difficultyColors.buttonColor} />
           <Pill
             color={difficultyColors.buttonColor}
             data={difficultyColors.title}
@@ -69,6 +73,8 @@ export default async function Play({ params }: { params: { diff: string } }) {
             <SudokuBoardWrapper
               sudokudata={sodokudata.puzzle}
               sudokuSolution={sodokudata.solution}
+              sudokuId={sodokudata.id}
+              userId={session?.user?.id}
             />
           </div>
           <div className="md:basis-1/4"> Leaderboard</div>

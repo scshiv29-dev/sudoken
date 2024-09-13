@@ -1,19 +1,26 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useImperativeHandle, forwardRef } from "react";
 import Pill from "./pill";
+
 interface ClockProps {
-  onStop?: () => void;
+  onStop?: (timeStoppedAt: number) => void; // Pass the time when the clock is stopped
   color: string;
+  isRunning?: boolean; // Control whether the clock is running from outside
 }
 
-const Clock: React.FC<ClockProps> = ({ onStop, color }) => {
+export interface ClockHandle {
+  stop: () => void; // Method to stop the clock externally
+  getCurrentTime: () => number; // Method to get the current time, even if the clock is stopped
+}
+
+const Clock = forwardRef<ClockHandle, ClockProps>(({ onStop, color, isRunning = true }, ref) => {
   const [seconds, setSeconds] = useState<number>(0);
-  const [isRunning, setIsRunning] = useState<boolean>(true);
+  const [internalIsRunning, setInternalIsRunning] = useState<boolean>(isRunning);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
 
-    if (isRunning) {
+    if (internalIsRunning) {
       timer = setInterval(() => {
         setSeconds((prevSeconds) => prevSeconds + 1);
       }, 1000);
@@ -22,12 +29,25 @@ const Clock: React.FC<ClockProps> = ({ onStop, color }) => {
     return () => {
       if (timer) clearInterval(timer);
     };
-  }, [isRunning]);
+  }, [internalIsRunning]);
 
-  const stopClock = () => {
-    setIsRunning(false);
-    onStop ? onStop() : null;
-  };
+  // This allows the parent to stop the clock via a ref
+  useImperativeHandle(ref, () => ({
+    stop() {
+      setInternalIsRunning(false);
+      if (onStop) {
+        onStop(seconds); // Pass the stop time to the parent
+      }
+    },
+    getCurrentTime() {
+      return seconds; // Return the current time, even if stopped
+    }
+  }));
+
+  // Update internal running state when `isRunning` prop changes
+  useEffect(() => {
+    setInternalIsRunning(isRunning);
+  }, [isRunning]);
 
   const getTwoDigitsTime = (...values: number[]): string => {
     return values
@@ -44,6 +64,6 @@ const Clock: React.FC<ClockProps> = ({ onStop, color }) => {
   };
 
   return <Pill color={color} data={formatTime(seconds)} />;
-};
+});
 
 export default Clock;

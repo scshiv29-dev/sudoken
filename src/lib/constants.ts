@@ -102,21 +102,21 @@ export const faqs = [
   {
     question: "Is Sudoken free to play?",
     answer:
-      "Yes, Sudoken offers a free version with limited puzzles. We also have a premium version with additional features and unlimited puzzles.",
+      "Yes, Sudoken is free.",
   },
   {
     question: "Can I play offline?",
     answer:
-      "Once you've downloaded the app, you can play puzzles offline. Your progress will sync when you're back online.",
+      "Once you've signed up, you can play puzzles online only. We are working on an android app but its under development.",
   },
   {
     question: "How often are new puzzles added?",
     answer:
-      "We add new puzzles daily to keep the challenge fresh and exciting for our users.",
+      "We have a database of 500k sudoku puzzles, you'll never run out of puzzles.",
   },
   {
     question: "Is there a leaderboard?",
     answer:
-      "Yes, we have global and friend leaderboards so you can compete with Sudoku enthusiasts worldwide or just with your friends.",
+      "Yes, we have global leaderboard so you can compete with Sudoku enthusiasts worldwide ",
   },
 ];

@@ -35,7 +35,7 @@ export async function addUserGamesToPuzzle(puzzleId: string, userGame: UserGame)
 }
 
 // Create a new UserGame
-export async function createUserGame(data: Omit<UserGame, 'id'>): Promise<UserGame> {
+export async function createUserGame(data: Partial<UserGame>): Promise<UserGame> {
   const newUserGame = await prisma.userGame.create({
     data
   });
