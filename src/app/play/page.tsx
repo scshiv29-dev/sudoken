@@ -1,10 +1,4 @@
 "use client";
-
-import { useState } from "react";
-
-import Card from "@/components/Card";
-import Homepage from "@/components/homepage";
-import Playnow from "@/components/Playnow";
 import DifficultySelector from "@/components/DifficultySelector";
 
 export default function Play() {

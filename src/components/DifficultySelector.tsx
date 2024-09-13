@@ -46,12 +46,7 @@ const DifficultySelector = () => {
         ))}
       </div>
       {difficulty ? (
-        <Playnow
-          clearDiff={clearDiff}
-          color={difficulty.textColor}
-          diff={difficulty.title}
-          buttonColor={difficulty.buttonColor}
-        />
+        <Playnow clearDiff={clearDiff} difficultyColors={difficulty} />
       ) : null}
     </>
   );

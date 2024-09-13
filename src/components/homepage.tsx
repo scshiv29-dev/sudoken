@@ -1,21 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import Navbar from "./navbar";
-import Playnow from "@/components/Playnow";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Grid3X3Icon,
-  TrophyIcon,
-  BrainIcon,
-  ZapIcon,
-  ShuffleIcon,
-  BarChartIcon,
-  ClockIcon,
-  SmartphoneIcon,
-  StarIcon,
-} from "lucide-react";
+import { StarIcon } from "lucide-react";
 import Link from "next/link";
 import {
   Accordion,
@@ -24,7 +11,7 @@ import {
   AccordionTrigger,
 } from "./ui/accordion";
 import DifficultySelector from "./DifficultySelector";
-import { faqs, testimonials } from "@/lib/constants";
+import { faqs, testimonials, whyChoose } from "@/lib/constants";
 
 export default function HomePage() {
   return (
@@ -51,28 +38,7 @@ export default function HomePage() {
             Why Choose Sudoken?
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              {
-                icon: ZapIcon,
-                title: "Adaptive Difficulty",
-                description: "Puzzles that grow with your skills",
-              },
-              {
-                icon: SmartphoneIcon,
-                title: "Play Anywhere",
-                description: "Available on all your devices",
-              },
-              {
-                icon: BarChartIcon,
-                title: "Track Progress",
-                description: "Monitor your improvement over time",
-              },
-              {
-                icon: ClockIcon,
-                title: "Time Challenges",
-                description: "Test your speed and accuracy",
-              },
-            ].map((feature, index) => (
+            {whyChoose.map((feature, index) => (
               <Card
                 key={index}
                 className="bg-white dark:bg-gray-800 border-none shadow-lg">

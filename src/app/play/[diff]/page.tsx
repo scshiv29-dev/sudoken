@@ -1,9 +1,10 @@
 import Clock from "@/components/Clock";
-import { difficulties } from "@/lib/constants";
+import { difficulties, DifficultyTitle } from "@/lib/constants";
 import SudokuBoardWrapper from "@/components/SudokuBoardWrapper";
 import Pill from "@/components/pill";
 import { getRandomPuzzleByDifficulty } from "@/lib/db";
 import { capitalize } from "@/lib/utils";
+import { redirect } from "next/navigation";
 
 interface SudokuData {
   puzzle: string[][];
@@ -24,7 +25,12 @@ function isStringArrayArray(value: any): value is string[][] {
 
 export default async function Play({ params }: { params: { diff: string } }) {
   let sodokudata: SudokuData | null = null;
-
+  const isValidDiff = Object.values(DifficultyTitle).includes(
+    capitalize(params.diff) as DifficultyTitle
+  );
+  if (!isValidDiff) {
+    redirect("/play/easy");
+  }
   try {
     const data = await getRandomPuzzleByDifficulty(params.diff);
 
