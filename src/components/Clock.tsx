@@ -29,15 +29,18 @@ const Clock: React.FC<ClockProps> = ({ onStop, color }) => {
     onStop ? onStop() : null;
   };
 
-  const getTwoDigitsTime = (val: number): string => {
-    if (val > 9) return val.toString();
-    else return "0" + val;
+  const getTwoDigitsTime = (...values: number[]): string => {
+    return values
+      .map((val) => (val > 9 ? val.toString() : "0" + val))
+      .join(":");
   };
+
   const formatTime = (totalSeconds: number): string => {
-    const hours = getTwoDigitsTime(Math.floor(totalSeconds / 3600));
-    const minutes = getTwoDigitsTime(Math.floor((totalSeconds % 3600) / 60));
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
-    return `${hours}:${minutes}:${seconds}`;
+
+    return getTwoDigitsTime(hours, minutes, seconds);
   };
 
   return <Pill color={color} data={formatTime(seconds)} />;

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { difficulties, Difficulty } from "@/lib/utils";
+import { difficulties, Difficulty } from "@/lib/constants";
 import Playnow from "./Playnow";
 import { Button } from "./ui/button";
 import { Loader2 } from "lucide-react";

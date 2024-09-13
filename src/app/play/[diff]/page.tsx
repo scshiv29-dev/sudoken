@@ -1,5 +1,5 @@
 import Clock from "@/components/Clock";
-import { difficulties } from "@/lib/utils";
+import { difficulties } from "@/lib/constants";
 import SudokuBoardWrapper from "@/components/SudokuBoardWrapper";
 import Pill from "@/components/pill";
 import { getRandomPuzzleByDifficulty } from "@/lib/db";

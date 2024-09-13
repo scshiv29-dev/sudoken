@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,10 +8,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "./ui/button";
-import { useState } from "react";
+
 import { useRouter } from "next/navigation";
 
 export default function Playnow({ color, diff, buttonColor, clearDiff }: any) {

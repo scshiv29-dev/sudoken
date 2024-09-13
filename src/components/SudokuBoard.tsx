@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import Modal from "./Modal";
+import { modalArray, ModalData, ModalState } from "@/lib/constants";
 
 interface SudokuBoardProps {
   sudokudata: string[][];
@@ -20,15 +21,18 @@ export default function SudokuBoard({
   const [incorrectCells, setIncorrectCells] = useState<
     { row: number; col: number }[]
   >([]);
-
+  const [modal, setModal] = useState<ModalState | null>(null);
+  const openedModal = modalArray.find(({ state }) => state === modal);
   function hasZero(matrix: string[][]): boolean {
     return matrix.some((row) => row.some((value) => value === "0"));
   }
-
+  const closeModal = () => {
+    setModal(null);
+  };
   const checkSolution = () => {
     if (hasZero(board)) {
       setIsUnComplete(true);
-      (document.getElementById("my_modal_4") as HTMLDialogElement).showModal();
+      setModal(ModalState.Incomplete);
     } else {
       const incorrect: { row: number; col: number }[] = [];
       board.forEach((row, rowIndex) => {
@@ -41,17 +45,10 @@ export default function SudokuBoard({
 
       if (incorrect.length === 0) {
         setIsFinished(true);
-        (
-          document.getElementById("my_modal_5") as HTMLDialogElement
-        ).showModal();
+        setModal(ModalState.Success);
       } else {
         setIncorrectCells(incorrect);
-        (
-          document.getElementById("my_modal_6") as HTMLDialogElement
-        ).showModal();
-        (
-          document.getElementById("my_modal_7") as HTMLDialogElement
-        ).showModal();
+        setModal(ModalState.Incorrect);
       }
     }
   };
@@ -75,102 +72,10 @@ export default function SudokuBoard({
     }
   };
 
-  function ModalSuccess({
-    color,
-    title,
-    desc,
-  }: {
-    color: string;
-    title: string;
-    desc: string;
-  }) {
-    return (
-      <dialog id="my_modal_5" className="modal">
-        <div className="modal-box w-11/12 max-w-5xl">
-          <h3 className={`font-bold text-lg ${color}`}>{title}</h3>
-          <p className="py-4">{desc}</p>
-          <div className="modal-action">
-            <form method="dialog">
-              <button className="btn btn-primary">Close</button>
-            </form>
-          </div>
-        </div>
-      </dialog>
-    );
-  }
-
-  function ModalNoob({
-    color,
-    title,
-    desc,
-  }: {
-    color: string;
-    title: string;
-    desc: string;
-  }) {
-    return (
-      <dialog id="my_modal_6" className="modal">
-        <div className="modal-box w-11/12 max-w-5xl">
-          <h3 className={`font-bold text-lg ${color}`}>{title}</h3>
-          <p className="py-4">{desc}</p>
-          <div className="modal-action">
-            <form method="dialog">
-              <button className="btn btn-primary">Close</button>
-            </form>
-          </div>
-        </div>
-      </dialog>
-    );
-  }
-
-  function ModalIncorrect({
-    color,
-    title,
-    desc,
-  }: {
-    color: string;
-    title: string;
-    desc: string;
-  }) {
-    return (
-      <dialog id="my_modal_7" className="modal">
-        <div className="modal-box w-11/12 max-w-5xl">
-          <h3 className={`font-bold text-lg ${color}`}>{title}</h3>
-          <p className="py-4">{desc}</p>
-          <div className="modal-action">
-            <form method="dialog">
-              <button className="btn btn-primary">Close</button>
-            </form>
-          </div>
-        </div>
-      </dialog>
-    );
-  }
-
   return (
     <>
       <div className="flex flex-col gap-y-2 justify-center items-center">
         <div className="grid grid-cols-21 p-4 shadow-lg rounded-lg">
-          <Modal
-            color="text-error"
-            title="Complete the puzzle first"
-            desc="Sorry but the puzzle looks incomplete. Please fill all the squares to evaluate."
-          />
-          <ModalSuccess
-            color="text-success"
-            title="Congrats You Won"
-            desc="Congrats! You have completed the Sudoku. Your time has been added to the leaderboard of this quiz."
-          />
-          <ModalNoob
-            color="text-warning"
-            title="Oops Try again!"
-            desc="Seems like this is not the optimal solution for this puzzle. Try again 😊"
-          />
-          <ModalIncorrect
-            color="text-error"
-            title="Incorrect Solution"
-            desc="Some cells are incorrect. Please correct them to complete the puzzle."
-          />
           {board.map((row, rowIndex) =>
             row.map((cell, cellIndex) => {
               const thirdRow = (rowIndex + 1) % 3 === 0;
@@ -190,9 +95,9 @@ export default function SudokuBoard({
                     }
                     maxLength={1}
                     className={cn(
-                      `w-12 h-12 col-span-2 text-center border border-error/50 focus:outline-none focus:border-blue-500`,
+                      `w-12 h-12 col-span-2 text-center bg-white border border-error/50 focus:outline-none focus:border-blue-500`,
                       {
-                        "bg-primary text-primary-content pointer-events-none":
+                        "bg-secondary text-secondary-content pointer-events-none":
                           isReadOnly,
                         "bg-red-500 text-white": isIncorrect,
                         "mb-3": thirdRow,
@@ -209,6 +114,9 @@ export default function SudokuBoard({
           Check ?
         </button>
       </div>
+      {modal && openedModal ? (
+        <Modal modal={openedModal} closeModal={closeModal} />
+      ) : null}
     </>
   );
 }

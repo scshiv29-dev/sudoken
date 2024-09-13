@@ -1,26 +1,36 @@
 "use client";
 
+import { ModalData } from "@/lib/constants";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 export default function Modal({
-  color,
-  title,
-  desc,
+  modal,
+  closeModal,
 }: {
-  color: string;
-  title: string;
-  desc: string;
+  modal: ModalData;
+  closeModal: () => void;
 }) {
+  const { color, title, desc } = modal;
   return (
-    <dialog id="my_modal_4" className="modal">
-      <div className="modal-box w-11/12 max-w-5xl">
-        <h3 className={`font-bold text-lg ${color}`}>{title}</h3>
-        <p className="py-4">{desc}</p>
-        <div className="modal-action">
-          <form method="dialog">
-            {/* if there is a button, it will close the modal */}
-            <button className="btn btn-primary">Close</button>
-          </form>
-        </div>
-      </div>
-    </dialog>
+    <AlertDialog open={!!modal} onOpenChange={(v) => null}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle className={color}>{title}</AlertDialogTitle>
+          <AlertDialogDescription>{desc}</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel onClick={() => closeModal()}>
+            Close
+          </AlertDialogCancel>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
