@@ -3,7 +3,7 @@ import { difficulties, DifficultyTitle } from "@/lib/constants";
 import SudokuBoardWrapper from "@/components/SudokuBoardWrapper";
 import Pill from "@/components/pill";
 import { getRandomPuzzleByDifficulty } from "@/lib/db";
-import { capitalize } from "@/lib/utils";
+import { capitalize, getRandomDifficulty } from "@/lib/utils";
 import { redirect } from "next/navigation";
 
 interface SudokuData {
@@ -29,7 +29,7 @@ export default async function Play({ params }: { params: { diff: string } }) {
     capitalize(params.diff) as DifficultyTitle
   );
   if (!isValidDiff) {
-    redirect("/play/easy");
+    redirect(`/play/${getRandomDifficulty()}`);
   }
   try {
     const data = await getRandomPuzzleByDifficulty(params.diff);
