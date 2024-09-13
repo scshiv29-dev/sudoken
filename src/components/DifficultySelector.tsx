@@ -1,60 +1,16 @@
 import React, { useState } from "react";
 
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  TrophyIcon,
-  BrainIcon,
-  ZapIcon,
-  ShuffleIcon,
-  LucideIcon,
-  Loader2,
-} from "lucide-react";
+import { difficulties, Difficulty } from "@/lib/utils";
 import Playnow from "./Playnow";
 import { Button } from "./ui/button";
-
-type Difficulty = {
-  title: string;
-  icon: LucideIcon;
-  color: string;
-  textColor: string;
-  buttonColor: string;
-};
-const difficulties: Difficulty[] = [
-  {
-    title: "Easy",
-    icon: ZapIcon,
-    color: "bg-green-100 dark:bg-green-900",
-    textColor: "text-green-700 dark:text-green-300",
-    buttonColor: "bg-green-500 hover:bg-green-600 text-white",
-  },
-  {
-    title: "Medium",
-    icon: BrainIcon,
-    color: "bg-yellow-100 dark:bg-yellow-900",
-    textColor: "text-yellow-700 dark:text-yellow-300",
-    buttonColor: "bg-yellow-500 hover:bg-yellow-600 text-white",
-  },
-  {
-    title: "Hard",
-    icon: TrophyIcon,
-    color: "bg-red-100 dark:bg-red-900",
-    textColor: "text-red-700 dark:text-red-300",
-    buttonColor: "bg-red-500 hover:bg-red-600 text-white",
-  },
-  {
-    title: "Random",
-    icon: ShuffleIcon,
-    color: "bg-purple-100 dark:bg-purple-900",
-    textColor: "text-purple-700 dark:text-purple-300",
-    buttonColor: "bg-purple-500 hover:bg-purple-600 text-white",
-  },
-];
+import { Loader2 } from "lucide-react";
 
 const DifficultySelector = () => {
   const [difficulty, setDifficulty] = useState<Difficulty | null>(null);
   const [redirecting, setRedirecting] = useState<boolean>(false);
-  const clearDiff = () => {
-    setRedirecting(true);
+  const clearDiff = ({ redirect }: { redirect: boolean }) => {
+    setRedirecting(redirect);
     setDifficulty(null);
   };
   return (

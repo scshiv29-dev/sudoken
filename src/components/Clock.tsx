@@ -2,10 +2,11 @@
 import React, { useState, useEffect } from "react";
 import Pill from "./pill";
 interface ClockProps {
-  onStop: () => void;
+  onStop?: () => void;
+  color: string;
 }
 
-const Clock: React.FC = ({ onStop }: any) => {
+const Clock: React.FC<ClockProps> = ({ onStop, color }) => {
   const [seconds, setSeconds] = useState<number>(0);
   const [isRunning, setIsRunning] = useState<boolean>(true);
 
@@ -25,19 +26,21 @@ const Clock: React.FC = ({ onStop }: any) => {
 
   const stopClock = () => {
     setIsRunning(false);
-    onStop();
+    onStop ? onStop() : null;
   };
 
+  const getTwoDigitsTime = (val: number): string => {
+    if (val > 9) return val.toString();
+    else return "0" + val;
+  };
   const formatTime = (totalSeconds: number): string => {
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const hours = getTwoDigitsTime(Math.floor(totalSeconds / 3600));
+    const minutes = getTwoDigitsTime(Math.floor((totalSeconds % 3600) / 60));
     const seconds = totalSeconds % 60;
     return `${hours}:${minutes}:${seconds}`;
   };
 
-  return (
-        <Pill data={formatTime(seconds)}/>
-  );
+  return <Pill color={color} data={formatTime(seconds)} />;
 };
 
 export default Clock;

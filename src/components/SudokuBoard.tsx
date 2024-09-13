@@ -17,7 +17,9 @@ export default function SudokuBoard({
   const [board, setBoard] = useState(sudokudata);
   const [isUnComplete, setIsUnComplete] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
-  const [incorrectCells, setIncorrectCells] = useState<{ row: number; col: number }[]>([]);
+  const [incorrectCells, setIncorrectCells] = useState<
+    { row: number; col: number }[]
+  >([]);
 
   function hasZero(matrix: string[][]): boolean {
     return matrix.some((row) => row.some((value) => value === "0"));
@@ -26,7 +28,7 @@ export default function SudokuBoard({
   const checkSolution = () => {
     if (hasZero(board)) {
       setIsUnComplete(true);
-      (document.getElementById('my_modal_4') as HTMLDialogElement).showModal();
+      (document.getElementById("my_modal_4") as HTMLDialogElement).showModal();
     } else {
       const incorrect: { row: number; col: number }[] = [];
       board.forEach((row, rowIndex) => {
@@ -39,11 +41,17 @@ export default function SudokuBoard({
 
       if (incorrect.length === 0) {
         setIsFinished(true);
-        (document.getElementById('my_modal_5') as HTMLDialogElement).showModal();
+        (
+          document.getElementById("my_modal_5") as HTMLDialogElement
+        ).showModal();
       } else {
         setIncorrectCells(incorrect);
-        (document.getElementById('my_modal_6') as HTMLDialogElement).showModal();
-        (document.getElementById('my_modal_7') as HTMLDialogElement).showModal();
+        (
+          document.getElementById("my_modal_6") as HTMLDialogElement
+        ).showModal();
+        (
+          document.getElementById("my_modal_7") as HTMLDialogElement
+        ).showModal();
       }
     }
   };
@@ -59,7 +67,11 @@ export default function SudokuBoard({
         })
       );
       setBoard(newBoard);
-      setIncorrectCells(incorrectCells.filter(cell => cell.row !== rowIndex || cell.col !== cellIndex));
+      setIncorrectCells(
+        incorrectCells.filter(
+          (cell) => cell.row !== rowIndex || cell.col !== cellIndex
+        )
+      );
     }
   };
 
@@ -137,7 +149,7 @@ export default function SudokuBoard({
 
   return (
     <>
-      <div className="flex justify-center items-center">
+      <div className="flex flex-col gap-y-2 justify-center items-center">
         <div className="grid grid-cols-21 p-4 shadow-lg rounded-lg">
           <Modal
             color="text-error"
@@ -180,7 +192,8 @@ export default function SudokuBoard({
                     className={cn(
                       `w-12 h-12 col-span-2 text-center border border-error/50 focus:outline-none focus:border-blue-500`,
                       {
-                        "bg-primary text-primary-content pointer-events-none": isReadOnly,
+                        "bg-primary text-primary-content pointer-events-none":
+                          isReadOnly,
                         "bg-red-500 text-white": isIncorrect,
                         "mb-3": thirdRow,
                       }

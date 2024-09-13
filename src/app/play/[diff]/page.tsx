@@ -1,7 +1,9 @@
 import Clock from "@/components/Clock";
+import { difficulties } from "@/lib/utils";
 import SudokuBoardWrapper from "@/components/SudokuBoardWrapper";
 import Pill from "@/components/pill";
 import { getRandomPuzzleByDifficulty } from "@/lib/db";
+import { capitalize } from "@/lib/utils";
 
 interface SudokuData {
   puzzle: string[][];
@@ -14,7 +16,8 @@ function isStringArrayArray(value: any): value is string[][] {
   return (
     Array.isArray(value) &&
     value.every(
-      (row) => Array.isArray(row) && row.every((cell) => typeof cell === "string")
+      (row) =>
+        Array.isArray(row) && row.every((cell) => typeof cell === "string")
     )
   );
 }
@@ -42,12 +45,23 @@ export default async function Play({ params }: { params: { diff: string } }) {
   }
 
   if (sodokudata) {
+    const difficultyColors = difficulties.filter(
+      ({ title }) => title === capitalize(sodokudata.difficulty)
+    )[0];
     return (
       <div>
         <div className="flex justify-center items-center gap-x-10 p-10">
-          <Clock />
-          <Pill data={sodokudata.difficulty} />
-          <Pill data={sodokudata.bestTime} />
+          <Clock color={difficultyColors.buttonColor} />
+          <Pill
+            color={difficultyColors.buttonColor}
+            data={difficultyColors.title}
+          />
+          {sodokudata.bestTime ? (
+            <Pill
+              color={difficultyColors.buttonColor}
+              data={sodokudata.bestTime}
+            />
+          ) : null}
         </div>
         <div className="flex flex-col md:flex-row h-[calc(100vh-12rem)]">
           <div className="md:basis-1/4 hidden md:block" />

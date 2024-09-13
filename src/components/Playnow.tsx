@@ -27,7 +27,7 @@ export default function Playnow({ color, diff, buttonColor, clearDiff }: any) {
     diff !== "Random" ? diff.toLowerCase() : getRandomDifficulty();
 
   return (
-    <AlertDialog open={!!diff} onOpenChange={(v) => clearDiff()}>
+    <AlertDialog open={!!diff} onOpenChange={(v) => null}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className={color}>{diff}</AlertDialogTitle>
@@ -37,9 +37,14 @@ export default function Playnow({ color, diff, buttonColor, clearDiff }: any) {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel onClick={() => clearDiff({ redirect: false })}>
+            Cancel
+          </AlertDialogCancel>
           <AlertDialogAction
-            onClick={() => router.push(`/play/${difficulty}`)}
+            onClick={() => {
+              clearDiff({ redirect: true });
+              router.push(`/play/${difficulty}`);
+            }}
             className={buttonColor}>
             Play Now
           </AlertDialogAction>
