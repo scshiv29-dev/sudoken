@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import Modal from "./Modal";
 import { modalArray, ModalData, ModalState } from "@/lib/constants";
+import { Button } from "./ui/button";
 
 interface SudokuBoardProps {
   sudokudata: string[][];
@@ -110,9 +111,9 @@ export default function SudokuBoard({
             })
           )}
         </div>
-        <button className="btn btn-info" onClick={checkSolution}>
+        <Button variant="info" onClick={checkSolution}>
           Check ?
-        </button>
+        </Button>
       </div>
       {modal && openedModal ? (
         <Modal modal={openedModal} closeModal={closeModal} />
