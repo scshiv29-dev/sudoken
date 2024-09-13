@@ -15,7 +15,7 @@ import { Button } from "./ui/button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function Playnow({ color, diff, buttonColor }: any) {
+export default function Playnow({ color, diff, buttonColor, clearDiff }: any) {
   function getRandomDifficulty(): string {
     const difficulties = ["easy", "medium", "hard"];
     const randomIndex = Math.floor(Math.random() * difficulties.length);
@@ -25,15 +25,9 @@ export default function Playnow({ color, diff, buttonColor }: any) {
   const router = useRouter();
   const difficulty =
     diff !== "Random" ? diff.toLowerCase() : getRandomDifficulty();
-  const [open, setOpen] = useState(false);
 
   return (
-    <AlertDialog open={open} onOpenChange={(v) => setOpen(v)}>
-      <AlertDialogTrigger asChild>
-        <Button variant="secondary" className={`mt-4 ${buttonColor}`}>
-          Start Game
-        </Button>
-      </AlertDialogTrigger>
+    <AlertDialog open={!!diff} onOpenChange={(v) => clearDiff()}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className={color}>{diff}</AlertDialogTitle>
