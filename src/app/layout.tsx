@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar";
-import Provider from "@/components/Provider";
+import Providers from "@/providers/Providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,16 +16,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
     <html lang="en" suppressHydrationWarning>
       <title>Sudoken</title>
       <body className={inter.className}>
-        <Provider>
-      <Navbar/>
-      {children}
-      </Provider>
-        </body>
+        <Providers>
+          <Navbar />
+          {children}
+        </Providers>
+      </body>
     </html>
   );
 }

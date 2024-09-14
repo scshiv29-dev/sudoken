@@ -6,25 +6,26 @@ import Clock, { ClockHandle } from "@/components/Clock";
 interface SudokuBoardWrapperProps {
   sudokudata: string[][];
   sudokuSolution: string[][];
-  sudokuId:string;
-  userId:string | undefined;
+  sudokuId: string;
+  userId: string | undefined;
+  clockColor: string;
 }
 
 const SudokuBoardWrapper: React.FC<SudokuBoardWrapperProps> = ({
   sudokudata,
   sudokuSolution,
   sudokuId,
-  userId
+  userId,
+  clockColor,
 }) => {
-  const data={
-    "userId":userId,
-    "puzzleId":sudokuId
+  const data = {
+    userId: userId,
+    puzzleId: sudokuId,
+  };
 
-  }
-  
   const clockRef = useRef<ClockHandle>(null);
   const [stoppedTime, setStoppedTime] = useState<number | null>(null);
-  const [currentTime,setCurrentTime]=useState<number | null>(null);
+  const [currentTime, setCurrentTime] = useState<number | null>(null);
   const handleStop = (timeStoppedAt: number) => {
     setStoppedTime(timeStoppedAt); // Update the state with the stop time
   };
@@ -40,19 +41,24 @@ const SudokuBoardWrapper: React.FC<SudokuBoardWrapperProps> = ({
       setCurrentTime(time);
     }
   };
-  
-useEffect(()=>{
-  createUserGame(data)
-})
+
+  useEffect(() => {
+    createUserGame(data);
+  });
   return (
     <>
-     <Clock ref={clockRef} color={"blue"} isRunning={true} onStop={handleStop} />
+      <Clock
+        ref={clockRef}
+        color={clockColor}
+        isRunning={true}
+        onStop={handleStop}
+      />
       <SudokuBoard
-      sudokudata={sudokudata}
-      sudokuSolution={sudokuSolution}
-      stopTimer={stopClock}
-      getTime={getCurrentTime}
-    />
+        sudokudata={sudokudata}
+        sudokuSolution={sudokuSolution}
+        stopTimer={stopClock}
+        getTime={getCurrentTime}
+      />
     </>
   );
 };

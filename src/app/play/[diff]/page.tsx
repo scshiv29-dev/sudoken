@@ -1,12 +1,12 @@
-import Clock from "@/components/Clock";
 import { difficulties } from "@/lib/constants";
 import SudokuBoardWrapper from "@/components/SudokuBoardWrapper";
 import Pill from "@/components/pill";
 import { getRandomPuzzleByDifficulty } from "@/lib/db";
 import { capitalize } from "@/lib/utils";
+import { auth } from "@/auth";
 
 interface SudokuData {
-  id:string;
+  id: string;
   puzzle: string[][];
   solution: string[][];
   difficulty: string;
@@ -25,17 +25,17 @@ function isStringArrayArray(value: any): value is string[][] {
 
 export default async function Play({ params }: { params: { diff: string } }) {
   let sodokudata: SudokuData | null = null;
-
+  const session = await auth();
   try {
     const data = await getRandomPuzzleByDifficulty(params.diff);
-    
+
     if (
       data &&
       isStringArrayArray(data.puzzle) &&
       isStringArrayArray(data.solution)
     ) {
       sodokudata = {
-        id:data.id,
+        id: data.id,
         puzzle: data.puzzle,
         solution: data.solution,
         difficulty: data.difficulty,
@@ -71,6 +71,7 @@ export default async function Play({ params }: { params: { diff: string } }) {
               sudokudata={sodokudata.puzzle}
               sudokuSolution={sodokudata.solution}
               sudokuId={sodokudata.id}
+              clockColor={difficultyColors.buttonColor}
               userId={session?.user?.id}
             />
           </div>
