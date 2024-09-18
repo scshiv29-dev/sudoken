@@ -1,30 +1,26 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import SudokuBoard from "@/components/SudokuBoard";
-import { createUserGame } from "@/app/actions";
+import { createOrGetUserGame } from "@/app/actions";
 import Clock, { ClockHandle } from "@/components/Clock";
+
 interface SudokuBoardWrapperProps {
   sudokudata: string[][];
   sudokuSolution: string[][];
-  sudokuId:string;
-  userId:string | undefined;
+  sudokuId: string;
+  userId: string | undefined;
 }
 
 const SudokuBoardWrapper: React.FC<SudokuBoardWrapperProps> = ({
   sudokudata,
   sudokuSolution,
   sudokuId,
-  userId
+  userId,
 }) => {
-  const data={
-    "userId":userId,
-    "puzzleId":sudokuId
-
-  }
-  
   const clockRef = useRef<ClockHandle>(null);
   const [stoppedTime, setStoppedTime] = useState<number | null>(null);
-  const [currentTime,setCurrentTime]=useState<number | null>(null);
+  const [currentTime, setCurrentTime] = useState<number | null>(null);
+
   const handleStop = (timeStoppedAt: number) => {
     setStoppedTime(timeStoppedAt); // Update the state with the stop time
   };
@@ -34,25 +30,37 @@ const SudokuBoardWrapper: React.FC<SudokuBoardWrapperProps> = ({
       clockRef.current.stop(); // Stop the clock externally
     }
   };
+
   const getCurrentTime = () => {
     if (clockRef.current) {
       const time = clockRef.current.getCurrentTime(); // Get the current time
       setCurrentTime(time);
     }
   };
-  
-useEffect(()=>{
-  createUserGame(data)
-})
+
+  useEffect(() => {
+    if (userId) {
+      const data = {
+        userId: userId,
+        puzzleId: sudokuId,
+      };
+      createOrGetUserGame(data);
+    } else {
+      // Handle the case when userId is undefined
+      console.error("User ID is undefined. Cannot create or get UserGame.");
+      // Optionally, you could redirect to a login page or show a message
+    }
+  }, [userId, sudokuId]);
+
   return (
     <>
-     <Clock ref={clockRef} color={"blue"} isRunning={true} onStop={handleStop} />
+      <Clock ref={clockRef} color={"blue"} isRunning={true} onStop={handleStop} />
       <SudokuBoard
-      sudokudata={sudokudata}
-      sudokuSolution={sudokuSolution}
-      stopTimer={stopClock}
-      getTime={getCurrentTime}
-    />
+        sudokudata={sudokudata}
+        sudokuSolution={sudokuSolution}
+        stopTimer={stopClock}
+        getTime={getCurrentTime}
+      />
     </>
   );
 };

@@ -1,5 +1,5 @@
 'use server';
 
-import { getRandomPuzzleByDifficulty,getPuzzleById,createUserGame,updateUserGame,addUserGamesToPuzzle } from "@/lib/db";
+import { getRandomPuzzleByDifficulty,getPuzzleById,createOrGetUserGame,updateUserGame,} from "@/lib/db";
 
-export {getRandomPuzzleByDifficulty,getPuzzleById,createUserGame,updateUserGame,addUserGamesToPuzzle}
+export {getRandomPuzzleByDifficulty,getPuzzleById,createOrGetUserGame,updateUserGame}

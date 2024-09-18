@@ -22,38 +22,51 @@ export async function updatePuzzleBestTime(
   });
   return updatedPuzzle;
 }
-
-// Add a user game to a puzzle
-export async function addUserGameToPuzzle(
-  puzzleId: string,
-  userGameData: Prisma.UserGameCreateWithoutPuzzleInput
-): Promise<Puzzle> {
-  const updatedPuzzle = await prisma.puzzle.update({
-    where: { id: puzzleId },
-    data: {
-      userGames: {
-        create: userGameData,
-      },
-    },
-    include: { userGames: true },
-  });
-  return updatedPuzzle;
-}
-
-// Create a new UserGame
-export async function createUserGame(
+// Alternative createOrGetUserGame function using findFirst
+export async function createOrGetUserGame(
   data: Prisma.UserGameUncheckedCreateInput
 ): Promise<UserGame> {
-  const newUserGame = await prisma.userGame.create({
-    data,
-  });
-  return newUserGame;
+  try {
+    const userGame = await prisma.userGame.create({
+      data,
+    });
+    return userGame;
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === 'P2002'
+    ) {
+      // Fetch the existing UserGame using findFirst
+      const existingUserGame = await prisma.userGame.findFirst({
+        where: {
+          userId: data.userId,
+          puzzleId: data.puzzleId,
+        },
+      });
+      if (existingUserGame) {
+        return existingUserGame;
+      } else {
+        throw new Error('UserGame already exists but could not be retrieved.');
+      }
+    } else {
+      throw error;
+    }
+  }
 }
 
-// Read a UserGame by ID
-export async function getUserGameById(id: string): Promise<UserGame | null> {
+// Get a UserGame by userId and puzzleId
+// Corrected getUserGameByUserAndPuzzle function
+export async function getUserGameByUserAndPuzzle(
+  userId: string,
+  puzzleId: string
+): Promise<UserGame | null> {
   const userGame = await prisma.userGame.findUnique({
-    where: { id },
+    where: {
+      userId_puzzleId: {
+        userId,
+        puzzleId,
+      },
+    },
   });
   return userGame;
 }
@@ -78,17 +91,17 @@ export async function deleteUserGame(id: string): Promise<UserGame> {
   return deletedUserGame;
 }
 
-// Get puzzles by difficulty
+// Get puzzles by difficulty with pagination
 export async function getPuzzlesByDifficulty(
   difficulty: string,
-  count: number
+  page: number,
+  pageSize: number
 ): Promise<Puzzle[]> {
   const puzzlesList = await prisma.puzzle.findMany({
     where: { difficulty },
-    take: count,
-    orderBy: {
-      id: 'asc',
-    },
+    skip: (page - 1) * pageSize,
+    take: pageSize,
+    orderBy: { id: 'asc' },
   });
   return puzzlesList;
 }
@@ -105,13 +118,12 @@ export async function getRandomPuzzleByDifficulty(
 
   const skip = Math.floor(Math.random() * puzzlesCount);
 
-  const randomPuzzle = await prisma.puzzle.findMany({
+  const randomPuzzle = await prisma.puzzle.findFirst({
     where: { difficulty },
-    take: 1,
-    skip: skip,
+    skip,
   });
 
-  return randomPuzzle.length ? randomPuzzle[0] : null;
+  return randomPuzzle;
 }
 
 // Get a random puzzle
@@ -122,10 +134,42 @@ export async function getRandomPuzzle(): Promise<Puzzle | null> {
 
   const skip = Math.floor(Math.random() * puzzlesCount);
 
-  const randomPuzzle = await prisma.puzzle.findMany({
-    take: 1,
-    skip: skip,
+  const randomPuzzle = await prisma.puzzle.findFirst({
+    skip,
   });
 
-  return randomPuzzle.length ? randomPuzzle[0] : null;
+  return randomPuzzle;
+}
+
+// Get userIds of users who have played a puzzle
+export async function getUserIdsByPuzzle(
+  puzzleId: string
+): Promise<string[]> {
+  const userGames = await prisma.userGame.findMany({
+    where: { puzzleId },
+    select: { userId: true },
+  });
+  return userGames.map((userGame) => userGame.userId);
+}
+
+// Get leaderboard of users for a puzzle
+export async function getLeaderboardByPuzzle(
+  puzzleId: string,
+  topN: number
+): Promise<{ userId: string; userBestTime: number | null }[]> {
+  const userGames = await prisma.userGame.findMany({
+    where: {
+      puzzleId,
+      solved: true,
+    },
+    select: {
+      userId: true,
+      userBestTime: true,
+    },
+    orderBy: {
+      userBestTime: 'asc',
+    },
+    take: topN,
+  });
+  return userGames;
 }

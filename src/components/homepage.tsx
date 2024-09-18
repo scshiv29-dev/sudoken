@@ -12,8 +12,11 @@ import {
 } from "./ui/accordion";
 import DifficultySelector from "./DifficultySelector";
 import { faqs, testimonials, whyChoose } from "@/lib/constants";
+import { auth } from "@/auth";
 
-export default function HomePage() {
+export default async function HomePage() {
+
+  const session=await auth()
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
       <main className="container mx-auto px-4 py-8">
@@ -25,11 +28,16 @@ export default function HomePage() {
             Challenge yourself with our adaptive Sudoku puzzles. Perfect for
             beginners and experts alike.
           </p>
-          <Link href={"/play"}>
+          {session?.user? (<Link href={"/play"}>
             <Button size="lg" className="text-lg px-8 py-6">
               Start Playing Now
             </Button>
-          </Link>
+          </Link> ) : (
+            <Button size="lg" className="text-lg px-8 py-6" >
+              Login To play
+            </Button>
+         ) }
+          
         </section>
 
         {/* Feature Highlights */}
@@ -65,8 +73,8 @@ export default function HomePage() {
             difficulty and start solving!
           </p>
         </section>
-
-        <DifficultySelector />
+            {session?.user? <DifficultySelector />:null}
+        
 
         {/* Testimonials */}
         <section className="py-20">
@@ -116,9 +124,15 @@ export default function HomePage() {
             Join millions of Sudoku enthusiasts and start your journey to
             becoming a Sudoku master today!
           </p>
-          <Button size="lg" className="text-lg px-8 py-6">
-            Join Sudoken Now
-          </Button>
+          {session?.user? (<Link href={"/play"}>
+            <Button size="lg" className="text-lg px-8 py-6">
+              Lets Play
+            </Button>
+          </Link> ) : (
+            <Button size="lg" className="text-lg px-8 py-6" >
+              Login To Join
+            </Button>
+         ) }
         </section>
       </main>
 

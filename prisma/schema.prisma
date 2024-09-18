@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["extendedWhereUnique"]
 }
 
 datasource db {
@@ -27,4 +28,6 @@ model UserGame {
 
   // Relationships
   puzzle       Puzzle   @relation(fields: [puzzleId], references: [id])
+
+  @@unique([userId, puzzleId])
 }
