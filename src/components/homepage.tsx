@@ -1,6 +1,4 @@
-"use client";
-
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { StarIcon } from "lucide-react";
 import Link from "next/link";
@@ -13,10 +11,10 @@ import {
 import DifficultySelector from "./DifficultySelector";
 import { faqs, testimonials, whyChoose } from "@/lib/constants";
 import { auth } from "@/auth";
+import { SignIn } from "./sign-in";
 
 export default async function HomePage() {
-
-  const session=await auth()
+  const session = await auth();
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
       <main className="container mx-auto px-4 py-8">
@@ -28,16 +26,21 @@ export default async function HomePage() {
             Challenge yourself with our adaptive Sudoku puzzles. Perfect for
             beginners and experts alike.
           </p>
-          {session?.user? (<Link href={"/play"}>
-            <Button size="lg" className="text-lg px-8 py-6">
+          {session?.user ? (
+            <Link
+              className={buttonVariants({ className: "text-lg px-8 py-6" })}
+              href={"/play"}>
               Start Playing Now
-            </Button>
-          </Link> ) : (
-            <Button size="lg" className="text-lg px-8 py-6" >
+            </Link>
+          ) : (
+            <SignIn
+              className={buttonVariants({
+                variant: "default",
+                className: "text-lg px-8 py-6",
+              })}>
               Login To play
-            </Button>
-         ) }
-          
+            </SignIn>
+          )}
         </section>
 
         {/* Feature Highlights */}
@@ -73,8 +76,7 @@ export default async function HomePage() {
             difficulty and start solving!
           </p>
         </section>
-            {session?.user? <DifficultySelector />:null}
-        
+        {session?.user ? <DifficultySelector /> : null}
 
         {/* Testimonials */}
         <section className="py-20">
@@ -124,15 +126,17 @@ export default async function HomePage() {
             Join millions of Sudoku enthusiasts and start your journey to
             becoming a Sudoku master today!
           </p>
-          {session?.user? (<Link href={"/play"}>
+          {session?.user ? (
+            <Link href={"/play"}>
+              <Button size="lg" className="text-lg px-8 py-6">
+                Lets Play
+              </Button>
+            </Link>
+          ) : (
             <Button size="lg" className="text-lg px-8 py-6">
-              Lets Play
-            </Button>
-          </Link> ) : (
-            <Button size="lg" className="text-lg px-8 py-6" >
               Login To Join
             </Button>
-         ) }
+          )}
         </section>
       </main>
 
