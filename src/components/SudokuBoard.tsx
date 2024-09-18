@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -59,6 +59,22 @@ export default function SudokuBoard({
   const [incorrectCells, setIncorrectCells] = useState<{ row: number; col: number }[]>([])
   const [modal, setModal] = useState<ModalState | null>(null)
   const [hintCount, setHintCount] = useState(0)
+  const [hintTimer, setHintTimer] = useState(0)
+  const [isHintAvailable, setIsHintAvailable] = useState(true)
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+    if (hintTimer > 0 && !isHintAvailable) {
+      interval = setInterval(() => {
+        setHintTimer((prevTimer) => prevTimer - 1);
+      }, 1000);
+    } else if (hintTimer === 0 && !isHintAvailable) {
+      setIsHintAvailable(true);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [hintTimer, isHintAvailable]);
 
   function hasZero(matrix: string[][]): boolean {
     return matrix.some((row) => row.some((value) => value === "0"))
@@ -111,22 +127,26 @@ export default function SudokuBoard({
   }
 
   const getHint = () => {
-    const emptyCells = board.flatMap((row, rowIndex) =>
-      row.map((cell, cellIndex) => ({ rowIndex, cellIndex, value: cell }))
-    ).filter(cell => cell.value === "0")
+    if (isHintAvailable) {
+      const emptyCells = board.flatMap((row, rowIndex) =>
+        row.map((cell, cellIndex) => ({ rowIndex, cellIndex, value: cell }))
+      ).filter(cell => cell.value === "0")
 
-    if (emptyCells.length > 0) {
-      const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)]
-      const newBoard = board.map((row, rIndex) =>
-        row.map((cell, cIndex) => {
-          if (rIndex === randomCell.rowIndex && cIndex === randomCell.cellIndex) {
-            return sudokuSolution[rIndex][cIndex]
-          }
-          return cell
-        })
-      )
-      setBoard(newBoard)
-      setHintCount(hintCount + 1)
+      if (emptyCells.length > 0) {
+        const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)]
+        const newBoard = board.map((row, rIndex) =>
+          row.map((cell, cIndex) => {
+            if (rIndex === randomCell.rowIndex && cIndex === randomCell.cellIndex) {
+              return sudokuSolution[rIndex][cIndex]
+            }
+            return cell
+          })
+        )
+        setBoard(newBoard)
+        setHintCount(hintCount + 1)
+        setIsHintAvailable(false)
+        setHintTimer(20)
+      }
     }
   }
 
@@ -171,7 +191,17 @@ export default function SudokuBoard({
         </div>
         <div className="flex gap-4">
           <Button onClick={checkSolution} className="mt-4">Check Solution</Button>
-          <Button onClick={getHint} className="mt-4" variant="outline">Get Hint ({hintCount})</Button>
+          <Button 
+            onClick={getHint} 
+            className="mt-4" 
+            variant="outline"
+            disabled={!isHintAvailable}
+          >
+            {isHintAvailable 
+              ? `Get Hint (${hintCount})`
+              : `Next hint in ${hintTimer}s`
+            }
+          </Button>
         </div>
       </div>
       <Dialog open={modal !== null} onOpenChange={closeModal}>

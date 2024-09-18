@@ -30,7 +30,7 @@ export default async function Play({ params }: { params: { diff: string } }) {
   let sodokudata: SudokuData | null = null;
   try {
     const data = await getRandomPuzzleByDifficulty(params.diff);
-
+    
     if (
       data &&
       isStringArrayArray(data.puzzle) &&
@@ -77,6 +77,7 @@ export default async function Play({ params }: { params: { diff: string } }) {
               sudokuSolution={sodokudata.solution}
               sudokuId={sodokudata.id}
               userId={session?.user?.id}
+              
             />
           </div>
           <div className="md:basis-1/4"> Leaderboard</div>

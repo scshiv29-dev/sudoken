@@ -8,6 +8,5 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     url: process.env.NEXT_PUBLIC_SUPABASE_URL as string,
     secret: process.env.NEXT_PUBLIC_ANON_KEY as string,
   }),
-  session: { strategy: "jwt" },
   ...authConfig,
 })
