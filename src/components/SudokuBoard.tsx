@@ -16,7 +16,7 @@ interface SudokuBoardProps {
   sudokudata: string[][]
   sudokuSolution: string[][]
   stopTimer: () => void
-  getTime:()=>void
+  getTime: () => void
 }
 
 enum ModalState {
@@ -58,6 +58,7 @@ export default function SudokuBoard({
   const [board, setBoard] = useState(sudokudata)
   const [incorrectCells, setIncorrectCells] = useState<{ row: number; col: number }[]>([])
   const [modal, setModal] = useState<ModalState | null>(null)
+  const [hintCount, setHintCount] = useState(0)
 
   function hasZero(matrix: string[][]): boolean {
     return matrix.some((row) => row.some((value) => value === "0"))
@@ -109,6 +110,26 @@ export default function SudokuBoard({
     }
   }
 
+  const getHint = () => {
+    const emptyCells = board.flatMap((row, rowIndex) =>
+      row.map((cell, cellIndex) => ({ rowIndex, cellIndex, value: cell }))
+    ).filter(cell => cell.value === "0")
+
+    if (emptyCells.length > 0) {
+      const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)]
+      const newBoard = board.map((row, rIndex) =>
+        row.map((cell, cIndex) => {
+          if (rIndex === randomCell.rowIndex && cIndex === randomCell.cellIndex) {
+            return sudokuSolution[rIndex][cIndex]
+          }
+          return cell
+        })
+      )
+      setBoard(newBoard)
+      setHintCount(hintCount + 1)
+    }
+  }
+
   const openedModal = modalArray.find(({ state }) => state === modal)
 
   return (
@@ -121,12 +142,13 @@ export default function SudokuBoard({
               const isIncorrect = incorrectCells.some(
                 (c) => c.row === rowIndex && c.col === cellIndex
               )
+              const isHint = !isReadOnly && cell !== "0"
               return (
                 <Input
                   key={`${rowIndex}-${cellIndex}`}
                   type="text"
                   value={cell === "0" ? "" : cell}
-                  readOnly={isReadOnly}
+                  readOnly={isReadOnly || isHint}
                   onChange={(e) =>
                     handleChange(rowIndex, cellIndex, e.target.value)
                   }
@@ -136,7 +158,8 @@ export default function SudokuBoard({
                     {
                       "bg-gray-300 text-black font-bold": isReadOnly,
                       "bg-red-200 text-red-800": isIncorrect,
-                      "bg-white": !isReadOnly && !isIncorrect,
+                      "bg-blue-200 text-blue-800 font-bold": isHint,
+                      "bg-white": !isReadOnly && !isIncorrect && !isHint,
                     },
                     (rowIndex + 1) % 3 === 0 && "border-b-black",
                     (cellIndex + 1) % 3 === 0 && "border-r-black"
@@ -146,7 +169,10 @@ export default function SudokuBoard({
             })
           )}
         </div>
-        <Button onClick={checkSolution} className="mt-4">Check Solution</Button>
+        <div className="flex gap-4">
+          <Button onClick={checkSolution} className="mt-4">Check Solution</Button>
+          <Button onClick={getHint} className="mt-4" variant="outline">Get Hint ({hintCount})</Button>
+        </div>
       </div>
       <Dialog open={modal !== null} onOpenChange={closeModal}>
         <DialogContent>

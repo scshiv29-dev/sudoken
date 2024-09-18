@@ -2,10 +2,10 @@ import Clock from "@/components/Clock";
 import { difficulties } from "@/lib/constants";
 import SudokuBoardWrapper from "@/components/SudokuBoardWrapper";
 import Pill from "@/components/pill";
-import { getRandomPuzzleByDifficulty } from "@/lib/db";
+import { getLeaderboardByPuzzle, getRandomPuzzleByDifficulty } from "@/lib/db";
 import { capitalize } from "@/lib/utils";
 import { auth } from "@/auth";
-
+import Protected from "@/components/Protected";
 interface SudokuData {
   id: string;
   puzzle: string[][];
@@ -25,7 +25,7 @@ function isStringArrayArray(value: any): value is string[][] {
 }
 
 export default async function Play({ params }: { params: { diff: string } }) {
-
+  let leaderboard;
   const session =await auth()
   let sodokudata: SudokuData | null = null;
   try {
@@ -36,6 +36,8 @@ export default async function Play({ params }: { params: { diff: string } }) {
       isStringArrayArray(data.puzzle) &&
       isStringArrayArray(data.solution)
     ) {
+      const lb=await getLeaderboardByPuzzle(data?.id,10)
+      leaderboard=lb; 
       sodokudata = {
         id: data.id,
         puzzle: data.puzzle,
@@ -54,6 +56,7 @@ export default async function Play({ params }: { params: { diff: string } }) {
     )[0];
     return (
       <div>
+        <Protected/>
         <div className="flex justify-center items-center gap-x-10 p-10">
           <Pill
             color={difficultyColors.buttonColor}
