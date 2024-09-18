@@ -7,8 +7,8 @@ import Clock, { ClockHandle } from "@/components/Clock";
 interface SudokuBoardWrapperProps {
   sudokudata: string[][];
   sudokuSolution: string[][];
-  sudokuId: string;
-  userId: string | undefined;
+  sudokuId:string;
+  userId:string | undefined;
 }
 
 const SudokuBoardWrapper: React.FC<SudokuBoardWrapperProps> = ({

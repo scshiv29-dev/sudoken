@@ -1,4 +1,4 @@
-
+import Clock from "@/components/Clock";
 import { difficulties } from "@/lib/constants";
 import SudokuBoardWrapper from "@/components/SudokuBoardWrapper";
 import Pill from "@/components/pill";
@@ -7,7 +7,7 @@ import { capitalize } from "@/lib/utils";
 import { auth } from "@/auth";
 
 interface SudokuData {
-  id:string;
+  id: string;
   puzzle: string[][];
   solution: string[][];
   difficulty: string;
@@ -28,17 +28,16 @@ export default async function Play({ params }: { params: { diff: string } }) {
 
   const session =await auth()
   let sodokudata: SudokuData | null = null;
-
   try {
     const data = await getRandomPuzzleByDifficulty(params.diff);
-    
+
     if (
       data &&
       isStringArrayArray(data.puzzle) &&
       isStringArrayArray(data.solution)
     ) {
       sodokudata = {
-        id:data.id,
+        id: data.id,
         puzzle: data.puzzle,
         solution: data.solution,
         difficulty: data.difficulty,

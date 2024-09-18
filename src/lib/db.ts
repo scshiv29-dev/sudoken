@@ -1,4 +1,4 @@
-import { PrismaClient, Puzzle, UserGame, Prisma } from '@prisma/client';
+import { PrismaClient, puzzles, UserGame } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -6,52 +6,40 @@ const prisma = new PrismaClient();
 export async function getPuzzleById(id: string): Promise<Puzzle | null> {
   const puzzle = await prisma.puzzle.findUnique({
     where: { id },
-    include: { userGames: true },
+    include: { userGames: true } // Include related UserGames
   });
   return puzzle;
 }
 
 // Update the best time of a puzzle
-export async function updatePuzzleBestTime(
-  id: string,
-  bestTime: number
-): Promise<Puzzle> {
-  const updatedPuzzle = await prisma.puzzle.update({
+export async function updatePuzzleBestTime(id: string, bestTime: number): Promise<puzzles> {
+  const updatedPuzzle = await prisma.puzzles.update({
     where: { id },
     data: { bestTime },
   });
   return updatedPuzzle;
 }
-// Alternative createOrGetUserGame function using findFirst
-export async function createOrGetUserGame(
-  data: Prisma.UserGameUncheckedCreateInput
-): Promise<UserGame> {
-  try {
-    const userGame = await prisma.userGame.create({
-      data,
-    });
-    return userGame;
-  } catch (error) {
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === 'P2002'
-    ) {
-      // Fetch the existing UserGame using findFirst
-      const existingUserGame = await prisma.userGame.findFirst({
-        where: {
-          userId: data.userId,
-          puzzleId: data.puzzleId,
-        },
-      });
-      if (existingUserGame) {
-        return existingUserGame;
-      } else {
-        throw new Error('UserGame already exists but could not be retrieved.');
+
+// Add user games to a puzzle
+export async function addUserGamesToPuzzle(puzzleId: string, userGame: UserGame): Promise<puzzles> {
+  const updatedPuzzle = await prisma.puzzles.update({
+    where: { id: puzzleId },
+    data: {
+      userGames: {
+        create: userGame
       }
-    } else {
-      throw error;
-    }
-  }
+    },
+    include: { userGames: true } // Include related UserGames
+  });
+  return updatedPuzzle;
+}
+
+// Create a new UserGame
+export async function createUserGame(data: Partial<UserGame>): Promise<UserGame> {
+  const newUserGame = await prisma.userGame.create({
+    data
+  });
+  return newUserGame;
 }
 
 // Get a UserGame by userId and puzzleId
@@ -61,21 +49,13 @@ export async function getUserGameByUserAndPuzzle(
   puzzleId: string
 ): Promise<UserGame | null> {
   const userGame = await prisma.userGame.findUnique({
-    where: {
-      userId_puzzleId: {
-        userId,
-        puzzleId,
-      },
-    },
+    where: { id }
   });
   return userGame;
 }
 
 // Update a UserGame
-export async function updateUserGame(
-  id: string,
-  data: Prisma.UserGameUpdateInput
-): Promise<UserGame> {
+export async function updateUserGame(id: string, data: Partial<UserGame>): Promise<UserGame> {
   const updatedUserGame = await prisma.userGame.update({
     where: { id },
     data,
@@ -91,27 +71,21 @@ export async function deleteUserGame(id: string): Promise<UserGame> {
   return deletedUserGame;
 }
 
-// Get puzzles by difficulty with pagination
-export async function getPuzzlesByDifficulty(
-  difficulty: string,
-  page: number,
-  pageSize: number
-): Promise<Puzzle[]> {
-  const puzzlesList = await prisma.puzzle.findMany({
+export async function getPuzzlesByDifficulty(difficulty: string, count: number): Promise<puzzles[]> {
+  const puzzlesList = await prisma.puzzles.findMany({
     where: { difficulty },
-    skip: (page - 1) * pageSize,
-    take: pageSize,
-    orderBy: { id: 'asc' },
+    take: count,
+    orderBy: {
+      id: 'asc' // Adjust the order as necessary
+    }
   });
   return puzzlesList;
 }
 
-// Get a random puzzle by difficulty
-export async function getRandomPuzzleByDifficulty(
-  difficulty: string
-): Promise<Puzzle | null> {
-  const puzzlesCount = await prisma.puzzle.count({
-    where: { difficulty },
+export async function getRandomPuzzleByDifficulty(difficulty: string): Promise<puzzles | null> {
+
+  const puzzlesCount = await prisma.puzzles.count({
+    where: { difficulty }
   });
 
   if (puzzlesCount === 0) return null;
@@ -120,10 +94,11 @@ export async function getRandomPuzzleByDifficulty(
 
   const randomPuzzle = await prisma.puzzle.findFirst({
     where: { difficulty },
-    skip,
+    take: 1,
+    skip: skip
   });
-
-  return randomPuzzle;
+  
+  return randomPuzzle.length ? randomPuzzle[0] : null;
 }
 
 // Get a random puzzle
@@ -134,42 +109,12 @@ export async function getRandomPuzzle(): Promise<Puzzle | null> {
 
   const skip = Math.floor(Math.random() * puzzlesCount);
 
-  const randomPuzzle = await prisma.puzzle.findFirst({
-    skip,
+  const randomPuzzle = await prisma.puzzles.findMany({
+    take: 1,
+    skip: skip
   });
 
-  return randomPuzzle;
+  return randomPuzzle.length ? randomPuzzle[0] : null;
 }
 
-// Get userIds of users who have played a puzzle
-export async function getUserIdsByPuzzle(
-  puzzleId: string
-): Promise<string[]> {
-  const userGames = await prisma.userGame.findMany({
-    where: { puzzleId },
-    select: { userId: true },
-  });
-  return userGames.map((userGame) => userGame.userId);
-}
 
-// Get leaderboard of users for a puzzle
-export async function getLeaderboardByPuzzle(
-  puzzleId: string,
-  topN: number
-): Promise<{ userId: string; userBestTime: number | null }[]> {
-  const userGames = await prisma.userGame.findMany({
-    where: {
-      puzzleId,
-      solved: true,
-    },
-    select: {
-      userId: true,
-      userBestTime: true,
-    },
-    orderBy: {
-      userBestTime: 'asc',
-    },
-    take: topN,
-  });
-  return userGames;
-}
