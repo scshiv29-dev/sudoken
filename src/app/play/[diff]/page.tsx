@@ -2,7 +2,7 @@ import Clock from "@/components/Clock";
 import { difficulties } from "@/lib/constants";
 import SudokuBoardWrapper from "@/components/SudokuBoardWrapper";
 import Pill from "@/components/pill";
-import { getLeaderboardByPuzzle, getRandomPuzzleByDifficulty } from "@/lib/db";
+import { getRandomPuzzleByDifficulty } from "@/lib/db";
 import { capitalize } from "@/lib/utils";
 import { auth } from "@/auth";
 
@@ -23,10 +23,7 @@ function isStringArrayArray(value: any): value is string[][] {
     )
   );
 }
-function getLeaderboard(id:string){
-  getLeaderboardByPuzzle(id,10)
 
-}
 export default async function Play({ params }: { params: { diff: string } }) {
 
   const session =await auth()
