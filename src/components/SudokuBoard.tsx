@@ -12,12 +12,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { CheckIcon, XIcon } from "lucide-react"
-
+import {updateUserGame} from "@/app/actions"
 interface SudokuBoardProps {
   sudokudata: string[][]
   sudokuSolution: string[][]
   stopTimer: () => void
   getTime: () => void
+  updateGame: (time:any) => void
+
 }
 
 enum ModalState {
@@ -54,7 +56,8 @@ export default function SudokuBoard({
   sudokudata,
   sudokuSolution,
   stopTimer,
-  getTime
+  getTime,
+  updateGame
 }: SudokuBoardProps) {
   const [board, setBoard] = useState(sudokudata)
   const [hintCells, setHintCells] = useState<boolean[][]>(
@@ -63,6 +66,7 @@ export default function SudokuBoard({
   const [correctCells, setCorrectCells] = useState<boolean[][]>(
     Array(9).fill(null).map(() => Array(9).fill(false))
   )
+  console.log(sudokuSolution)
   const [incorrectCells, setIncorrectCells] = useState<{ row: number; col: number }[]>([])
   const [modal, setModal] = useState<ModalState | null>(null)
   const [hintCount, setHintCount] = useState(0)
@@ -91,7 +95,10 @@ export default function SudokuBoard({
   const closeModal = () => {
     setModal(null)
   }
-
+  const updateUserGame=()=>{
+    const t=getTime()
+    updateGame(t)
+  }
   const checkSolution = () => {
     if (hasZero(board)) {
       setModal(ModalState.Incomplete)
@@ -114,6 +121,7 @@ export default function SudokuBoard({
 
       if (incorrect.length === 0) {
         stopTimer()
+        updateUserGame()
         setModal(ModalState.Success)
       } else {
         setModal(ModalState.Incorrect)

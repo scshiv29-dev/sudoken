@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import SudokuBoard from "@/components/SudokuBoard";
-import { createOrGetUserGame } from "@/app/actions";
+import { createOrGetUserGame, updateUserGame } from "@/app/actions";
 import Clock, { ClockHandle } from "@/components/Clock";
 
 
@@ -23,7 +23,7 @@ const SudokuBoardWrapper: React.FC<SudokuBoardWrapperProps> = ({
   const [stoppedTime, setStoppedTime] = useState<number | null>(null);
   const [currentTime, setCurrentTime] = useState<number | null>(null);
   const [userGame,setUserGame] =useState("");
-  console.log(userId)
+  
   const handleStop = (timeStoppedAt: number) => {
     setStoppedTime(timeStoppedAt); // Update the state with the stop time
   };
@@ -40,7 +40,15 @@ const SudokuBoardWrapper: React.FC<SudokuBoardWrapperProps> = ({
       setCurrentTime(time);
     }
   };
-
+  const update=(time:any)=>{
+    updateUserGame(userGame,{
+      puzzleId:sudokuId,
+      solved:true,
+      userBestTime:time,
+    }).then(()=>{
+      console.log("updated")
+    })
+  }
   useEffect(() => {
     if (userId) {
       const data = {
@@ -67,6 +75,7 @@ const SudokuBoardWrapper: React.FC<SudokuBoardWrapperProps> = ({
         sudokuSolution={sudokuSolution}
         stopTimer={stopClock}
         getTime={getCurrentTime}
+        updateGame={update}
       />
     </>
   );
