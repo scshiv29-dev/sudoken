@@ -194,7 +194,7 @@ export default async function HomePage() {
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-blue-500">
+                  <a href="/privacy-policy" className="hover:text-blue-500">
                     Privacy Policy
                   </a>
                 </li>
