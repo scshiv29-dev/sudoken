@@ -10,7 +10,6 @@ interface SudokuBoardWrapperProps {
   sudokuSolution: string[][];
   sudokuId:string;
   userId:string |undefined;
-
 }
 
 const SudokuBoardWrapper: React.FC<SudokuBoardWrapperProps> = ({
@@ -49,7 +48,7 @@ const SudokuBoardWrapper: React.FC<SudokuBoardWrapperProps> = ({
         puzzleId: sudokuId,
       };
       createOrGetUserGame(data).then((val)=>{
-        console.log(val)
+        setUserGame(val.id)
       })
     
     } else {

@@ -30,7 +30,7 @@ export default async function Play({ params }: { params: { diff: string } }) {
   let sodokudata: SudokuData | null = null;
   try {
     const data = await getRandomPuzzleByDifficulty(params.diff);
-    
+
     if (
       data &&
       isStringArrayArray(data.puzzle) &&
@@ -56,7 +56,7 @@ export default async function Play({ params }: { params: { diff: string } }) {
     )[0];
     return (
       <div>
-        <Protected/>
+
         <div className="flex justify-center items-center gap-x-10 p-10">
           <Pill
             color={difficultyColors.buttonColor}

@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { CheckIcon, XIcon } from "lucide-react"
 
 interface SudokuBoardProps {
   sudokudata: string[][]
@@ -56,11 +57,18 @@ export default function SudokuBoard({
   getTime
 }: SudokuBoardProps) {
   const [board, setBoard] = useState(sudokudata)
+  const [hintCells, setHintCells] = useState<boolean[][]>(
+    Array(9).fill(null).map(() => Array(9).fill(false))
+  )
+  const [correctCells, setCorrectCells] = useState<boolean[][]>(
+    Array(9).fill(null).map(() => Array(9).fill(false))
+  )
   const [incorrectCells, setIncorrectCells] = useState<{ row: number; col: number }[]>([])
   const [modal, setModal] = useState<ModalState | null>(null)
   const [hintCount, setHintCount] = useState(0)
   const [hintTimer, setHintTimer] = useState(0)
   const [isHintAvailable, setIsHintAvailable] = useState(true)
+  const [isSolutionChecked, setIsSolutionChecked] = useState(false)
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -89,19 +97,25 @@ export default function SudokuBoard({
       setModal(ModalState.Incomplete)
     } else {
       const incorrect: { row: number; col: number }[] = []
+      const newCorrectCells = correctCells.map(row => [...row])
       board.forEach((row, rowIndex) => {
         row.forEach((cell, cellIndex) => {
           if (cell !== sudokuSolution[rowIndex][cellIndex]) {
             incorrect.push({ row: rowIndex, col: cellIndex })
+          } else {
+            newCorrectCells[rowIndex][cellIndex] = true
           }
         })
       })
+
+      setCorrectCells(newCorrectCells)
+      setIncorrectCells(incorrect)
+      setIsSolutionChecked(true)
 
       if (incorrect.length === 0) {
         stopTimer()
         setModal(ModalState.Success)
       } else {
-        setIncorrectCells(incorrect)
         setModal(ModalState.Incorrect)
       }
     }
@@ -118,11 +132,20 @@ export default function SudokuBoard({
         })
       )
       setBoard(newBoard)
-      setIncorrectCells(
-        incorrectCells.filter(
-          (cell) => cell.row !== rowIndex || cell.col !== cellIndex
+      if (isSolutionChecked) {
+        const newCorrectCells = correctCells.map((row, rIndex) =>
+          row.map((cell, cIndex) => {
+            if (rIndex === rowIndex && cIndex === cellIndex) {
+              return value === sudokuSolution[rowIndex][cellIndex]
+            }
+            return cell
+          })
         )
-      )
+        setCorrectCells(newCorrectCells)
+        setIncorrectCells(prevIncorrect => 
+          prevIncorrect.filter(cell => cell.row !== rowIndex || cell.col !== cellIndex)
+        )
+      }
     }
   }
 
@@ -143,6 +166,11 @@ export default function SudokuBoard({
           })
         )
         setBoard(newBoard)
+        setHintCells(prevHintCells => {
+          const newHintCells = [...prevHintCells]
+          newHintCells[randomCell.rowIndex][randomCell.cellIndex] = true
+          return newHintCells
+        })
         setHintCount(hintCount + 1)
         setIsHintAvailable(false)
         setHintTimer(20)
@@ -162,29 +190,44 @@ export default function SudokuBoard({
               const isIncorrect = incorrectCells.some(
                 (c) => c.row === rowIndex && c.col === cellIndex
               )
-              const isHint = !isReadOnly && cell !== "0"
+              const isHint = hintCells[rowIndex][cellIndex]
+              const isCorrect = correctCells[rowIndex][cellIndex]
               return (
-                <Input
-                  key={`${rowIndex}-${cellIndex}`}
-                  type="text"
-                  value={cell === "0" ? "" : cell}
-                  readOnly={isReadOnly || isHint}
-                  onChange={(e) =>
-                    handleChange(rowIndex, cellIndex, e.target.value)
-                  }
-                  maxLength={1}
-                  className={cn(
-                    "w-10 h-10 text-center rounded-none border-[1px] border-gray-300 focus:z-10 focus:outline-none focus:ring-2 focus:ring-blue-500",
-                    {
-                      "bg-gray-300 text-black font-bold": isReadOnly,
-                      "bg-red-200 text-red-800": isIncorrect,
-                      "bg-blue-200 text-blue-800 font-bold": isHint,
-                      "bg-white": !isReadOnly && !isIncorrect && !isHint,
-                    },
-                    (rowIndex + 1) % 3 === 0 && "border-b-black",
-                    (cellIndex + 1) % 3 === 0 && "border-r-black"
+                <div key={`${rowIndex}-${cellIndex}`} className="relative">
+                  <Input
+                    
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    value={cell === "0" ? "" : cell}
+                    readOnly={isReadOnly || isHint || isCorrect}
+                    onChange={(e) =>
+                      handleChange(rowIndex, cellIndex, e.target.value)
+                    }
+                    min={1}
+                    max={9}
+                    className={cn(
+                      "w-10 h-10 text-center rounded-none border-[1px] border-gray-300 focus:z-10 focus:outline-none focus:ring-2 focus:ring-blue-500",
+                      {
+                        "bg-gray-300 text-black font-bold": isReadOnly,
+                        "bg-red-200 text-red-800": isIncorrect,
+                        "bg-blue-200 text-blue-800 font-bold": isHint,
+                        "bg-green-200 text-green-800": isCorrect && !isReadOnly && !isHint,
+                        "bg-white": !isReadOnly && !isIncorrect && !isHint && !isCorrect,
+                      },
+                      (rowIndex + 1) % 3 === 0 && "border-b-black",
+                      (cellIndex + 1) % 3 === 0 && "border-r-black"
+                    )}
+                  />
+                  {isSolutionChecked && (isCorrect || isIncorrect) && (
+                    <div className="absolute top-0 right-0 p-1">
+                      {isCorrect ? (
+                        <CheckIcon className="w-3 h-3 text-green-500" />
+                      ) : (
+                        <XIcon className="w-3 h-3 text-red-500" />
+                      )}
+                    </div>
                   )}
-                />
+                </div>
               )
             })
           )}
