@@ -66,4 +66,7 @@ const Clock = forwardRef<ClockHandle, ClockProps>(({ onStop, color, isRunning = 
   return <Pill color={color} data={formatTime(seconds)} />;
 });
 
+// Add display name to the Clock component
+Clock.displayName = "Clock";
+
 export default Clock;

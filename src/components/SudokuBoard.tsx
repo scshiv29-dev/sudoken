@@ -195,7 +195,6 @@ export default function SudokuBoard({
               return (
                 <div key={`${rowIndex}-${cellIndex}`} className="relative">
                   <Input
-                    
                     inputMode="numeric"
                     pattern="[0-9]*"
                     value={cell === "0" ? "" : cell}
