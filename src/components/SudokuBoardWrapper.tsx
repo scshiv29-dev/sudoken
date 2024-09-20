@@ -71,7 +71,7 @@ const SudokuBoardWrapper: React.FC<SudokuBoardWrapperProps> = ({
 <div className="w-full max-w-4xl mx-auto p-4 flex flex-col md:flex-row gap-4">
       <div className="flex-grow space-y-4">
         <div className="flex justify-between items-center">
-          <Badge className="bg-green-500 text-white px-3 py-1">{difficulty.toLocaleUpperCase()}</Badge>
+          <Badge className="bg-zinc-900 text-white px-3 py-1 text-xl">{difficulty.toLocaleUpperCase()}</Badge>
           <Clock ref={clockRef} color="bg-blue-500" isRunning={true} onStop={handleStop} />
         </div>
         <SudokuBoard
