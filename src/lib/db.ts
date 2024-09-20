@@ -76,13 +76,42 @@ export async function updateUserGame(
   id: string,
   data: Partial<UserGame>
 ): Promise<UserGame> {
-  const updatedUserGame = await prisma.userGame.update({
-    where: { id },
-    data,
-  });
-  return updatedUserGame;
-}
+  return await prisma.$transaction(async (tx) => {
+    // Update the UserGame
+    const updatedUserGame = await tx.userGame.update({
+      where: { id },
+      data,
+    });
 
+    // Check if userBestTime was updated
+    if (data.userBestTime !== undefined) {
+      // Fetch the associated Puzzle
+      const puzzle = await tx.puzzle.findUnique({
+        where: { id: updatedUserGame.puzzleId },
+        select: { bestTime: true },
+      });
+
+      if (!puzzle) {
+        throw new Error('Associated puzzle not found.');
+      }
+
+      // Determine if the Puzzle's bestTime needs to be updated
+      const shouldUpdatePuzzleBestTime =
+        puzzle.bestTime === null ||
+        (updatedUserGame.userBestTime !== null &&
+          updatedUserGame.userBestTime < puzzle.bestTime);
+
+      if (shouldUpdatePuzzleBestTime) {
+        await tx.puzzle.update({
+          where: { id: updatedUserGame.puzzleId },
+          data: { bestTime: updatedUserGame.userBestTime },
+        });
+      }
+    }
+
+    return updatedUserGame;
+  });
+}
 // Delete a UserGame
 export async function deleteUserGame(id: string): Promise<UserGame> {
   const deletedUserGame = await prisma.userGame.delete({
@@ -172,4 +201,41 @@ export async function getLeaderboardByPuzzle(
     take: topN,
   });
   return userGames;
+}
+// Get all UserGames by userId
+// Get all UserGames by userId
+export async function getUserGamesByUserId(
+  userId: string,
+  page: number = 1,
+  pageSize: number = 10,
+  status?: string,
+  sort?: string
+) {
+  const skip = (page - 1) * pageSize
+  
+  let whereClause: any = { userId }
+  if (status === 'solved') {
+    whereClause.solved = true
+  } else if (status === 'in-progress') {
+    whereClause.solved = false
+  }
+
+  let orderBy: any = { id: 'desc' } // Default to newest
+  if (sort === 'oldest') {
+    orderBy = { id: 'asc' }
+  } else if (sort === 'best-time') {
+    orderBy = { userBestTime: 'asc' }
+  }
+
+  const [userGames, totalGames] = await Promise.all([
+    prisma.userGame.findMany({
+      where: whereClause,
+      orderBy,
+      skip,
+      take: pageSize,
+    }),
+    prisma.userGame.count({ where: whereClause }),
+  ])
+
+  return { userGames, totalGames }
 }

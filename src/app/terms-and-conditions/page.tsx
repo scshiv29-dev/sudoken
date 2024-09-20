@@ -1,5 +1,5 @@
 import TermsAndConditions from "@/components/TermsAndConditions";
-export default function Home() {
+export default function Page() {
   return (
     <>
      <TermsAndConditions/>
