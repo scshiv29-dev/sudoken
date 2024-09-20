@@ -189,8 +189,8 @@ export default async function HomePage() {
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-blue-500">
-                    Contact Us
+                  <a href="/terms-and-conditions" className="hover:text-blue-500">
+                    Terms and Conditions
                   </a>
                 </li>
                 <li>
@@ -199,7 +199,7 @@ export default async function HomePage() {
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-blue-500">
+                  <a href="/terms-of-service" className="hover:text-blue-500">
                     Terms of Service
                   </a>
                 </li>
@@ -234,7 +234,7 @@ export default async function HomePage() {
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700 text-center text-gray-500 dark:text-gray-400">
-            <p>© 2023 Sudoken. All rights reserved.</p>
+            <p>© 2024 Sudoken. All rights reserved. Made by Shivam with help from AI and his friend Reenav .</p>
           </div>
         </div>
       </footer>
