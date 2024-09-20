@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Table,
@@ -47,11 +47,22 @@ export function MyGamesClient({
 }: MyGamesClientProps) {
   const [games, setGames] = useState(initialGames)
   const [currentPage, setCurrentPage] = useState(initialPage)
-  const [currentStatus, setCurrentStatus] = useState(initialStatus)
-  const [currentSort, setCurrentSort] = useState(initialSort)
+  const [currentStatus, setCurrentStatus] = useState(initialStatus || 'all')
+  const [currentSort, setCurrentSort] = useState(initialSort || 'newest')
   const router = useRouter()
+  const searchParams = useSearchParams()
   const pageSize = 10
   const totalPages = Math.ceil(totalGames / pageSize)
+
+  useEffect(() => {
+    const page = searchParams.get('page')
+    const status = searchParams.get('status')
+    const sort = searchParams.get('sort')
+
+    if (page) setCurrentPage(Number(page))
+    if (status) setCurrentStatus(status)
+    if (sort) setCurrentSort(sort)
+  }, [searchParams])
 
   const formatTime = (seconds: number | null) => {
     if (seconds === null) return "N/A"
@@ -61,30 +72,32 @@ export function MyGamesClient({
   }
 
   const updateQueryParams = (params: { [key: string]: string | number | undefined }) => {
-    const searchParams = new URLSearchParams()
+    const newSearchParams = new URLSearchParams(searchParams.toString())
     Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined) {
-        searchParams.set(key, value.toString())
+        newSearchParams.set(key, value.toString())
+      } else {
+        newSearchParams.delete(key)
       }
     })
-    router.push(`/my-games?${searchParams.toString()}`)
+    router.push(`/my-games?${newSearchParams.toString()}`)
   }
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage)
-    updateQueryParams({ page: newPage, status: currentStatus, sort: currentSort })
+    updateQueryParams({ page: newPage })
   }
 
   const handleStatusChange = (newStatus: string) => {
     setCurrentStatus(newStatus)
     setCurrentPage(1)
-    updateQueryParams({ page: 1, status: newStatus, sort: currentSort })
+    updateQueryParams({ page: 1, status: newStatus === 'all' ? undefined : newStatus })
   }
 
   const handleSortChange = (newSort: string) => {
     setCurrentSort(newSort)
     setCurrentPage(1)
-    updateQueryParams({ page: 1, status: currentStatus, sort: newSort })
+    updateQueryParams({ page: 1, sort: newSort })
   }
 
   return (
@@ -95,7 +108,7 @@ export function MyGamesClient({
         </CardHeader>
         <CardContent>
           <div className="flex justify-between items-center mb-4">
-            <Select onValueChange={handleStatusChange} value={currentStatus || "all"}>
+            <Select onValueChange={handleStatusChange} value={currentStatus}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
@@ -105,7 +118,7 @@ export function MyGamesClient({
                 <SelectItem value="in-progress">In Progress</SelectItem>
               </SelectContent>
             </Select>
-            <Select onValueChange={handleSortChange} value={currentSort || "newest"}>
+            <Select onValueChange={handleSortChange} value={currentSort}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>

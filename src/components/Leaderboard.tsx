@@ -13,6 +13,7 @@ import {
 import Link from 'next/link'
 
 interface LeaderboardEntry {
+  userName:string
   userId: string
   totalGames: number
   solvedCount: number
@@ -45,7 +46,7 @@ export function LeaderboardClient({ initialData }: LeaderboardClientProps) {
             <TableHeader>
               <TableRow>
                 <TableHead>Rank</TableHead>
-                <TableHead>User ID</TableHead>
+                <TableHead>User Name</TableHead>
                 <TableHead>Total Games</TableHead>
                 <TableHead>Solved Games</TableHead>
                 <TableHead>Best Time</TableHead>
@@ -56,13 +57,13 @@ export function LeaderboardClient({ initialData }: LeaderboardClientProps) {
               {leaderboardData.map((entry, index) => (
                 <TableRow key={entry.userId}>
                   <TableCell>{index + 1}</TableCell>
-                  <TableCell>{entry.userId}</TableCell>
+                  <TableCell>{entry.userName}</TableCell>
                   <TableCell>{entry.totalGames}</TableCell>
                   <TableCell>{entry.solvedCount}</TableCell>
                   <TableCell>{formatTime(entry.bestTime)}</TableCell>
                   <TableCell>
                     {entry.bestPuzzleId ? (
-                      <Link href={`/puzzle/${entry.bestPuzzleId}`} className="text-blue-600 hover:underline">
+                      <Link href={`/game/${entry.bestPuzzleId}`} className="text-blue-600 hover:underline">
                         View Puzzle
                       </Link>
                     ) : (

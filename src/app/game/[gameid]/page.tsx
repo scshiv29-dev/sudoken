@@ -2,7 +2,7 @@ import Clock from "@/components/Clock";
 import { difficulties } from "@/lib/constants";
 import SudokuBoardWrapper from "@/components/SudokuBoardWrapper";
 import Pill from "@/components/pill";
-import { getLeaderboardByPuzzle, getRandomPuzzleByDifficulty } from "@/lib/db";
+import { getLeaderboardByPuzzle, getPuzzleById, getRandomPuzzleByDifficulty } from "@/lib/db";
 import { capitalize } from "@/lib/utils";
 import { auth } from "@/auth";
 import Protected from "@/components/Protected";
@@ -24,12 +24,12 @@ function isStringArrayArray(value: any): value is string[][] {
   );
 }
 
-export default async function Play({ params }: { params: { diff: string } }) {
+export default async function Play({ params }: { params: { gameid: string } }) {
   let leaderboard;
   const session =await auth()
   let sodokudata: SudokuData | null = null;
   try {
-    const data = await getRandomPuzzleByDifficulty(params.diff);
+    const data = await getPuzzleById(params.gameid);
 
     if (
       data &&
@@ -58,7 +58,6 @@ export default async function Play({ params }: { params: { diff: string } }) {
       <div>
 
         <div className="flex justify-center items-center gap-x-10 p-10">
-          <Protected/>
           <Pill
             color={difficultyColors.buttonColor}
             data={difficultyColors.title}

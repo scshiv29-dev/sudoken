@@ -12,3 +12,18 @@ export async function getUserGames(userid:string) {
     .eq("id", userid);
     return data
 }
+
+export async function getUser(userId:string){
+  console.log(userId)
+  const {data,error}=await supabase
+  .from("users")
+  .select()
+  .eq("id",userId);
+  console.log(data)
+  if(data){
+    return data
+  }
+  else{
+    return "User Not Public"
+  }
+}

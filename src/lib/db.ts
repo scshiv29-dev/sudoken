@@ -1,6 +1,18 @@
 import { PrismaClient, Puzzle, UserGame, Prisma } from '@prisma/client';
+import { getUser } from '@/lib/supabase';
 
 const prisma = new PrismaClient();
+
+interface LeaderboardEntry {
+  userName:string;
+  userId: string;
+  totalGames: number;
+  solvedCount: number;
+  bestTime: number | null;
+  bestPuzzleId: string | null;
+}
+
+
 
 // Read a puzzle by ID
 export async function getPuzzleById(id: string): Promise<Puzzle | null> {
@@ -203,7 +215,6 @@ export async function getLeaderboardByPuzzle(
   return userGames;
 }
 // Get all UserGames by userId
-// Get all UserGames by userId
 export async function getUserGamesByUserId(
   userId: string,
   page: number = 1,
@@ -238,4 +249,53 @@ export async function getUserGamesByUserId(
   ])
 
   return { userGames, totalGames }
+}
+
+
+
+export async function getLeaderboard(): Promise<LeaderboardEntry[]> {
+  const leaderboardData = await prisma.userGame.groupBy({
+    by: ['userId'],
+    _count: {
+      id: true,
+      solved: true,
+    },
+    _min: {
+      userBestTime: true,
+    },
+    where: {
+      solved: true,
+    },
+    orderBy: {
+      _min: {
+        userBestTime: 'asc',
+      },
+    },
+  })
+  const leaderboard = await Promise.all(
+    leaderboardData.map(async (entry) => {
+      const userDetails=await getUser(entry.userId)
+      console.log(userDetails)
+      const bestGame = await prisma.userGame.findFirst({
+        where: {
+          userId: entry.userId,
+          userBestTime: entry._min.userBestTime,
+        },
+        select: {
+          puzzleId: true,
+        },
+      })
+
+      return {
+        userName:userDetails[0].name,
+        userId: entry.userId,
+        totalGames: entry._count.id,
+        solvedCount: entry._count.solved,
+        bestTime: entry._min.userBestTime,
+        bestPuzzleId: bestGame?.puzzleId || null,
+      }
+    })
+  )
+
+  return leaderboard
 }
