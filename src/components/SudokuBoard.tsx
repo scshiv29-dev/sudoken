@@ -12,14 +12,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { CheckIcon, XIcon } from "lucide-react"
-import {updateUserGame} from "@/app/actions"
+
 interface SudokuBoardProps {
   sudokudata: string[][]
   sudokuSolution: string[][]
   stopTimer: () => void
   getTime: () => void
-  updateGame: (time:any) => void
-
+  updateGame: (time: any) => void
 }
 
 enum ModalState {
@@ -66,7 +65,6 @@ export default function SudokuBoard({
   const [correctCells, setCorrectCells] = useState<boolean[][]>(
     Array(9).fill(null).map(() => Array(9).fill(false))
   )
-  
   const [incorrectCells, setIncorrectCells] = useState<{ row: number; col: number }[]>([])
   const [modal, setModal] = useState<ModalState | null>(null)
   const [hintCount, setHintCount] = useState(0)
@@ -95,10 +93,12 @@ export default function SudokuBoard({
   const closeModal = () => {
     setModal(null)
   }
-  const updateUserGame=()=>{
-    const t=getTime()
+
+  const updateUserGame = () => {
+    const t = getTime()
     updateGame(t)
   }
+
   const checkSolution = () => {
     if (hasZero(board)) {
       setModal(ModalState.Incomplete)
@@ -189,8 +189,8 @@ export default function SudokuBoard({
   const openedModal = modalArray.find(({ state }) => state === modal)
 
   return (
-    <>
-      <div className="flex flex-col gap-y-4 justify-center items-center">
+<>
+<div className="flex flex-col gap-y-4 justify-center items-center">
         <div className="grid grid-cols-9 gap-[1px] p-[1px] bg-black rounded-lg">
           {board.map((row, rowIndex) =>
             row.map((cell, cellIndex) => {

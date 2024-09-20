@@ -58,16 +58,6 @@ export default async function Play({ params }: { params: { gameid: string } }) {
       <div>
 
         <div className="flex justify-center items-center gap-x-10 p-10">
-          <Pill
-            color={difficultyColors.buttonColor}
-            data={difficultyColors.title}
-          />
-          {sodokudata.bestTime ? (
-            <Pill
-              color={difficultyColors.buttonColor}
-              data={sodokudata.bestTime}
-            />
-          ) : null}
         </div>
         <div className="flex flex-col md:flex-row h-[calc(100vh-12rem)]">
           <div className="md:basis-1/4 hidden md:block" />
@@ -77,6 +67,7 @@ export default async function Play({ params }: { params: { gameid: string } }) {
               sudokuSolution={sodokudata.solution}
               sudokuId={sodokudata.id}
               userId={session?.user?.id}
+              difficulty={sodokudata.difficulty}
               
             />
           </div>

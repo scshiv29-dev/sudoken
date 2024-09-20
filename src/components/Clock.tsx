@@ -1,16 +1,18 @@
 "use client";
+
 import React, { useState, useEffect, useImperativeHandle, forwardRef } from "react";
-import Pill from "./pill";
+
+import { Badge } from "@/components/ui/badge";
 
 interface ClockProps {
-  onStop?: (timeStoppedAt: number) => void; // Pass the time when the clock is stopped
+  onStop?: (timeStoppedAt: number) => void;
   color: string;
-  isRunning?: boolean; // Control whether the clock is running from outside
+  isRunning?: boolean;
 }
 
 export interface ClockHandle {
-  stop: () => void; // Method to stop the clock externally
-  getCurrentTime: () => number; // Method to get the current time, even if the clock is stopped
+  stop: () => void;
+  getCurrentTime: () => number;
 }
 
 const Clock = forwardRef<ClockHandle, ClockProps>(({ onStop, color, isRunning = true }, ref) => {
@@ -31,20 +33,18 @@ const Clock = forwardRef<ClockHandle, ClockProps>(({ onStop, color, isRunning = 
     };
   }, [internalIsRunning]);
 
-  // This allows the parent to stop the clock via a ref
   useImperativeHandle(ref, () => ({
     stop() {
       setInternalIsRunning(false);
       if (onStop) {
-        onStop(seconds); // Pass the stop time to the parent
+        onStop(seconds);
       }
     },
     getCurrentTime() {
-      return seconds; // Return the current time, even if stopped
+      return seconds;
     }
   }));
 
-  // Update internal running state when `isRunning` prop changes
   useEffect(() => {
     setInternalIsRunning(isRunning);
   }, [isRunning]);
@@ -60,13 +60,18 @@ const Clock = forwardRef<ClockHandle, ClockProps>(({ onStop, color, isRunning = 
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
 
-    return getTwoDigitsTime(hours, minutes, seconds);
+    return [hours, minutes, seconds]
+      .map(val => val.toString().padStart(2, '0'))
+      .join(':');
   };
 
-  return <Pill color={color} data={formatTime(seconds)} />;
+  return (
+    <Badge className={`${color} text-white px-3 py-1 text-xl`}>
+      {formatTime(seconds)}
+    </Badge>
+  );
 });
 
-// Add display name to the Clock component
 Clock.displayName = "Clock";
 
 export default Clock;
