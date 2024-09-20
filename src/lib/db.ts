@@ -251,51 +251,58 @@ export async function getUserGamesByUserId(
   return { userGames, totalGames }
 }
 
-
-
 export async function getLeaderboard(): Promise<LeaderboardEntry[]> {
-  const leaderboardData = await prisma.userGame.groupBy({
+  const usersGamesData = await prisma.userGame.groupBy({
     by: ['userId'],
     _count: {
       id: true,
       solved: true,
     },
     _min: {
-      userBestTime: true,
+      userBestTime: true,  // Only consider games that are solved
     },
     where: {
-      solved: true,
+      solved: true,  // Ensure we're only considering solved games for best time
     },
-    orderBy: {
-      _min: {
-        userBestTime: 'asc',
+  });
+
+  // Mapping to fetch each user's total game count separately to ensure accuracy
+  const totalGamesMap: { [userId: string]: number } = {};
+  const allGamesData = await prisma.userGame.groupBy({
+    by: ['userId'],
+    _count: {
+      id: true,
+    },
+  });
+  allGamesData.forEach(data => {
+    totalGamesMap[data.userId] = data._count.id;
+  });
+
+  const leaderboard: LeaderboardEntry[] = await Promise.all(usersGamesData.map(async (user) => {
+    const userDetails = await getUser(user.userId); // Assume getUser function is defined elsewhere
+    const userName = userDetails?.[0]?.name || 'Unknown User';
+    const bestGame = await prisma.userGame.findFirst({
+      where: {
+        userId: user.userId,
+        userBestTime: user._min.userBestTime,
       },
-    },
-  })
-  const leaderboard = await Promise.all(
-    leaderboardData.map(async (entry) => {
-      const userDetails=await getUser(entry.userId)
-      console.log(userDetails)
-      const bestGame = await prisma.userGame.findFirst({
-        where: {
-          userId: entry.userId,
-          userBestTime: entry._min.userBestTime,
-        },
-        select: {
-          puzzleId: true,
-        },
-      })
+      select: {
+        puzzleId: true,
+      },
+    });
 
-      return {
-        userName:userDetails[0].name,
-        userId: entry.userId,
-        totalGames: entry._count.id,
-        solvedCount: entry._count.solved,
-        bestTime: entry._min.userBestTime,
-        bestPuzzleId: bestGame?.puzzleId || null,
-      }
-    })
-  )
+    return {
+      userName,
+      userId: user.userId,
+      totalGames: totalGamesMap[user.userId],
+      solvedCount: user._count.solved ?? 0,
+      bestTime: user._min.userBestTime,
+      bestPuzzleId: bestGame?.puzzleId || null,
+    };
+  }));
 
-  return leaderboard
+  // Optional: Sorting by best time or other criteria
+  leaderboard.sort((a, b) => (a.bestTime ?? Infinity) - (b.bestTime ?? Infinity));
+
+  return leaderboard;
 }
