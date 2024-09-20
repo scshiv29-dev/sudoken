@@ -19,7 +19,7 @@ export async function getUser(userId:string){
   .from("users")
   .select()
   .eq("id",userId);
-  console.log(data)
+  
   if(data){
     return data
   }

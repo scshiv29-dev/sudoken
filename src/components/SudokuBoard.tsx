@@ -66,7 +66,7 @@ export default function SudokuBoard({
   const [correctCells, setCorrectCells] = useState<boolean[][]>(
     Array(9).fill(null).map(() => Array(9).fill(false))
   )
-  console.log(sudokuSolution)
+  
   const [incorrectCells, setIncorrectCells] = useState<{ row: number; col: number }[]>([])
   const [modal, setModal] = useState<ModalState | null>(null)
   const [hintCount, setHintCount] = useState(0)
