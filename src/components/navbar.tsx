@@ -21,6 +21,7 @@ export default async function Navbar() {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="text-xl font-bold">
+            
               Sudoken
             </Link>
             <Link href="/leaderboard" className="ml-4 hidden md:block">
@@ -39,9 +40,12 @@ export default async function Navbar() {
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuContent className="w-full" align="end" forceMount>
                   <DropdownMenuItem asChild>
-                    <Link href="/mygames">My Games</Link>
+                    <Link href="/mygames">
+                    
+                    <Button variant={"outline"} >My Games</Button>
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <SignOut />
