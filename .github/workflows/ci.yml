@@ -25,15 +25,15 @@ jobs:
 
       # Install dependencies
       - name: Install dependencies
-        run: npm install
+        run: yarn install
 
       # Run build
       - name: Run build
-        run: npm run build
+        run: yarn run build
 
       # ESLint check
       - name: Run ESLint
-        run: npm run lint
+        run: yarn run lint
 
       # Run spell check
       - name: Spell Check
@@ -46,7 +46,7 @@ jobs:
 
       # Run tests (optional, depending on whether you have tests set up)
       - name: Run tests
-        run: npm test
+        run: yarn test
 
   # Job to ensure linting and spell check pass before merge
   lint_spell_check:
@@ -64,11 +64,11 @@ jobs:
 
       # Install dependencies
       - name: Install dependencies
-        run: npm install
+        run: yarn install
 
       # ESLint check
       - name: ESLint Check
-        run: npm run lint
+        run: yarn run lint
 
       # Run spell check
       - name: Spell Check
