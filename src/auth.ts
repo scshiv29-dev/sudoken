@@ -5,7 +5,7 @@ import authConfig from "./auth.config"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: SupabaseAdapter({
-    url: process.env.NEXT_PUBLIC_SUPABASE_URL as string,
+    url:"https://flbcqbxfnsgzhsvhbhvv.supabase.co",
     secret: process.env.NEXT_PUBLIC_ANON_KEY as string,
   }),
   ...authConfig,
