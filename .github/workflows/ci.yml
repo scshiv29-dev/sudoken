@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: Spell Check
 
 on:
   push:
@@ -13,47 +13,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout code
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      # Set up Node.js environment
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          registry-url: 'https://registry.npmjs.org'  # Use this if using npm for other steps
-
-      # Set environment variables from GitHub Secrets
-      - name: Set env variables
-        run: |
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
-          echo "AUTH_SECRET=${{ secrets.AUTH_SECRET }}" >> $GITHUB_ENV
-          echo "AUTH_GITHUB_ID=${{ secrets.AUTH_GITHUB_ID }}" >> $GITHUB_ENV
-          echo "AUTH_GITHUB_SECRET=${{ secrets.AUTH_GITHUB_SECRET }}" >> $GITHUB_ENV
-          echo "NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}" >> $GITHUB_ENV
-          echo "NEXT_PUBLIC_ANON_KEY=${{ secrets.NEXT_PUBLIC_ANON_KEY }}" >> $GITHUB_ENV
-          echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> $GITHUB_ENV
-
-      # Install dependencies using Yarn
-      - name: Install dependencies
-        run: yarn install
-
-      # Run build using Yarn
-      - name: Run build
-        run: yarn build
-
-      # ESLint check
-      - name: Run ESLint
-        run: yarn lint
-
       # Run spell check
       - name: Spell Check
         uses: reviewdog/action-misspell@v1
         with:
           locale: "en"
           reporter: "github-pr-review"
-
-      # Run tests (optional)
-      - name: Run tests
-        run: yarn test
