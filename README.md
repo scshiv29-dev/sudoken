@@ -3,7 +3,7 @@ Here’s a README template for your Sudoken app that you can use on GitHub:
 ---
 
 # Sudoken
-https://github.com/scshiv29-dev/sudoken/actions/workflows/ci.yml/badge.svg
+[! [ Build ](https://github.com/scshiv29-dev/sudoken/actions/workflows/ci.yml/badge.svg)](https://github.com/scshiv29-dev/sudoken/actions/workflows/ci.yml)
 
 ![Sudoken Logo](./logo2.png) <!-- Replace with a link to your logo hosted on GitHub or elsewhere -->
 
