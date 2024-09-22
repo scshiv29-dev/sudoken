@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Run build
+      - name: Run build
+        run: npm run build
+
+      # ESLint check
+      - name: Run ESLint
+        run: npm run lint
+
+      # Run spell check
+      - name: Spell Check
+        uses: reviewdog/action-misspell@v1
+        with:
+          locale: "en"
+          # You can ignore specific directories by adding ignore paths
+          # e.g. ignore: 'node_modules/**/*,dist/**/*'
+          reporter: "github-pr-review" # Leave inline comments on the PR
+
+      # Run tests (optional, depending on whether you have tests set up)
+      - name: Run tests
+        run: npm test
+
+  # Job to ensure linting and spell check pass before merge
+  lint_spell_check:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # ESLint check
+      - name: ESLint Check
+        run: npm run lint
+
+      # Run spell check
+      - name: Spell Check
+        uses: reviewdog/action-misspell@v1
+        with:
+          locale: "en"
+          reporter: "github-pr-review"

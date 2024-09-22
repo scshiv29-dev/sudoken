@@ -3,10 +3,12 @@ Here’s a README template for your Sudoken app that you can use on GitHub:
 ---
 
 # Sudoken
+https://github.com/scshiv29-dev/sudoken/actions/workflows/ci.yml/badge.svg
 
 ![Sudoken Logo](./logo2.png) <!-- Replace with a link to your logo hosted on GitHub or elsewhere -->
 
 Sudoken is a modern and minimalist Sudoku game built as a Progressive Web App (PWA) using Next.js. It offers a clean interface for users to play Sudoku puzzles, along with a hint system to assist players in solving the game. The app is designed to work on phones , providing a seamless experience on both desktop and mobile devices.
+
 
 ## Features
 
