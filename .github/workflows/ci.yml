@@ -1,4 +1,4 @@
-name: CI
+name: CI Pipeline
 
 on:
   push:
@@ -22,53 +22,30 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+          registry-url: 'https://registry.npmjs.org'  # Use this if using npm for other steps
 
-      # Install dependencies
+      # Set environment variables from GitHub Secrets
+      - name: Set env variables
+        run: |
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
+          echo "AUTH_SECRET=${{ secrets.AUTH_SECRET }}" >> $GITHUB_ENV
+          echo "AUTH_GITHUB_ID=${{ secrets.AUTH_GITHUB_ID }}" >> $GITHUB_ENV
+          echo "AUTH_GITHUB_SECRET=${{ secrets.AUTH_GITHUB_SECRET }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_ANON_KEY=${{ secrets.NEXT_PUBLIC_ANON_KEY }}" >> $GITHUB_ENV
+          echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> $GITHUB_ENV
+
+      # Install dependencies using Yarn
       - name: Install dependencies
         run: yarn install
 
-      # Run build
+      # Run build using Yarn
       - name: Run build
-        run: yarn run build
+        run: yarn build
 
       # ESLint check
       - name: Run ESLint
-        run: yarn run lint
-
-      # Run spell check
-      - name: Spell Check
-        uses: reviewdog/action-misspell@v1
-        with:
-          locale: "en"
-          # You can ignore specific directories by adding ignore paths
-          # e.g. ignore: 'node_modules/**/*,dist/**/*'
-          reporter: "github-pr-review" # Leave inline comments on the PR
-
-      # Run tests (optional, depending on whether you have tests set up)
-      - name: Run tests
-        run: yarn test
-
-  # Job to ensure linting and spell check pass before merge
-  lint_spell_check:
-    runs-on: ubuntu-latest
-    steps:
-      # Checkout code
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      # Set up Node.js environment
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      # Install dependencies
-      - name: Install dependencies
-        run: yarn install
-
-      # ESLint check
-      - name: ESLint Check
-        run: yarn run lint
+        run: yarn lint
 
       # Run spell check
       - name: Spell Check
@@ -76,3 +53,7 @@ jobs:
         with:
           locale: "en"
           reporter: "github-pr-review"
+
+      # Run tests (optional)
+      - name: Run tests
+        run: yarn test
