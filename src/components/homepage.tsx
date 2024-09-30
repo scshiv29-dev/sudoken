@@ -234,7 +234,7 @@ export default async function HomePage() {
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700 text-center text-gray-500 dark:text-gray-400">
-            <p>© 2024 Sudoken. All rights reserved. Made by Shivam with help from AI and his friend Reenav .</p>
+            <p>© 2024 Sudoken. All rights reserved. Made by Shivam with help from AI .</p>
           </div>
         </div>
       </footer>
