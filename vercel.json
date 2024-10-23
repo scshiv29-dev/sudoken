@@ -1,7 +1,7 @@
 {
     "crons": [
       {
-        "path": "/api/keepsupabaseactive",
+        "path": "/api/supaactive",
         "schedule": "0 8 * * *"
       }
     ]
