@@ -8,6 +8,11 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY as string
 );
 export async function POST(req: Request) {
-  const { data, error } = await supabase.from("keepsupaalive").select();
+  const { data, error } = await supabase
+  .from("keepsupaalive")
+  .insert({rakh_jinda:1});
+
+
+  return NextResponse.json(data)
   console.log(data);
 }
